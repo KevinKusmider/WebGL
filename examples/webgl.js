@@ -18,14 +18,14 @@ function init() {
 
     scene = new THREE.Scene();
 
-    const texture = new THREE.TextureLoader().load( 'textures/crate.gif' );
+    const texture = new THREE.TextureLoader().load( 'textures/WalkingManSpriteSheet.png' );
 
     const geometry = new THREE.ConeGeometry( 20, 20, 20);
     const material = new THREE.MeshBasicMaterial( { map: texture } );
     cone = new THREE.Mesh( geometry, material );
     cone.position.x = 200;
     cone.position.y = 60;
-    cone.position.z = 2100;
+    cone.position.z = 200;
     scene.add( cone );
 
     cone2 = new THREE.Mesh( geometry, material );
