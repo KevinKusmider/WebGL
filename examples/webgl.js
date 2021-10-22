@@ -25,7 +25,7 @@ function init() {
     cone = new THREE.Mesh( geometry, material );
     cone.position.x = 200;
     cone.position.y = 60;
-    cone.position.z = 200;
+    cone.position.z = 2100;
     scene.add( cone );
 
     cone2 = new THREE.Mesh( geometry, material );
