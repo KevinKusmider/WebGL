@@ -18,7 +18,7 @@ function init() {
 
     scene = new THREE.Scene();
 
-    const texture = new THREE.TextureLoader().load( 'textures/crate.gif' );
+    const texture = new THREE.TextureLoader().load( 'textures/WalkingManSpriteSheet.png' );
 
     const geometry = new THREE.ConeGeometry( 20, 20, 20);
     const material = new THREE.MeshBasicMaterial( { map: texture } );
