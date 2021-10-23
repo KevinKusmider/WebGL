@@ -2,9 +2,10 @@ import * as THREE from '../build/three.module.js';
 import { OrbitControls } from './jsm/controls/OrbitControls.js';
 
 let camera, scene, renderer;
-let cone, cone2, cone3, cone4;
+let cone, cone2, cone3, cone4, cone5, cone6;
+let floor;
 let cylinder, cylinder2, cylinder3, cylinder4, cylinder5, cylinder6;
-let wall, wall2, wall2bis, wall2ter, wall3, wall4;
+let wall, wall2, wall2bis, wall2ter, wall3, wall4, wall5, wall6, wall7;
 let controls;
 
 init();
@@ -13,40 +14,58 @@ animate();
 function init() {
 
 
-    camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 1000 );
+    camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 2000 );
     camera.position.z = 500;
 
     scene = new THREE.Scene();
 
-    const texture = new THREE.TextureLoader().load( 'textures/WalkingManSpriteSheet.png' );
+    const texture = new THREE.TextureLoader().load( 'textures/testabode.jpg' );
+    const texture2 = new THREE.TextureLoader().load( 'textures/testabode2.jpg' );
+    const texture3 = new THREE.TextureLoader().load( 'textures/testabode3.jpg' );
 
-    const geometry = new THREE.ConeGeometry( 20, 20, 20);
-    const material = new THREE.MeshBasicMaterial( { map: texture } );
+    //LES CONES (J'ai changé la taille et la hauteur des cones => plus stylé)
+
+    const geometry = new THREE.ConeGeometry( 25, 40, 20);
+    const material = new THREE.MeshBasicMaterial( { map: texture2 } );
     cone = new THREE.Mesh( geometry, material );
     cone.position.x = 200;
-    cone.position.y = 60;
+    cone.position.y = 70;
     cone.position.z = 200;
     scene.add( cone );
 
     cone2 = new THREE.Mesh( geometry, material );
     cone2.position.x = -200;
-    cone2.position.y = 60;
+    cone2.position.y = 70;
     cone2.position.z = 200;
     scene.add( cone2 );
 
     cone3 = new THREE.Mesh( geometry, material );
     cone3.position.x = -200;
-    cone3.position.y = 60;
+    cone3.position.y = 70;
     cone3.position.z = -200;
     scene.add( cone3 );
 
     cone4 = new THREE.Mesh( geometry, material );
     cone4.position.x = 200;
-    cone4.position.y = 60;
+    cone4.position.y = 70;
     cone4.position.z = -200;
     scene.add( cone4 );
 
-    const geometry2 = new THREE.CylinderGeometry( 20, 20, 100, 100);
+    cone5 = new THREE.Mesh( geometry, material );
+    cone5.position.x = 50;
+    cone5.position.y = 70;
+    cone5.position.z = -200;
+    scene.add( cone5 );
+
+    cone6 = new THREE.Mesh( geometry, material );
+    cone6.position.x = -50;
+    cone6.position.y = 70;
+    cone6.position.z = -200;
+    scene.add( cone6 );
+
+    //LES CYLINDER (J'ai ++ la taille des cylinder car c'etait tout petit)
+
+    const geometry2 = new THREE.CylinderGeometry( 25, 25, 100, 100);
     const material2 = new THREE.MeshBasicMaterial( { map: texture } );
     cylinder = new THREE.Mesh( geometry2, material2 );
     cylinder.position.x = 200;
@@ -77,6 +96,8 @@ function init() {
     cylinder6.position.x = -50;
     cylinder6.position.z = -200;
     scene.add( cylinder6 );
+
+    //LES WALLS
 
     const geometry3 = new THREE.BoxGeometry( 400, 80, 10);
     const material3 = new THREE.MeshBasicMaterial( { map: texture } );
@@ -112,6 +133,35 @@ function init() {
     wall4.position.x = 200;
     wall4.position.y = -10;
     scene.add( wall4 );
+
+    const geometry8 = new THREE.BoxGeometry( 10, 80, 200)
+    wall5 = new THREE.Mesh( geometry8, material3 );
+    wall5.position.x = 20;
+    wall5.position.y = -10;
+    wall5.position.z = 100;
+    scene.add( wall5 );
+
+    const geometry9 = new THREE.BoxGeometry( 70, 80, 10)
+    wall6 = new THREE.Mesh( geometry9, material3 );
+    wall6.position.x = 165;
+    wall6.position.y = -10;
+    wall6.position.z = 0;
+    scene.add( wall6 );
+
+    const geometry10 = new THREE.BoxGeometry( 70, 80, 10)
+    wall7 = new THREE.Mesh( geometry9, material3 );
+    wall7.position.x = 50;
+    wall7.position.y = -10;
+    wall7.position.z = 0;
+    scene.add( wall7 );
+
+    //LE FLOOR (le sol)
+    const material4 = new THREE.MeshBasicMaterial( { map: texture } );
+    const geometry7 = new THREE.BoxGeometry( 400, 2, 400);
+    floor = new THREE.Mesh( geometry7, material4 );
+    floor.position.x = 0;
+    floor.position.y = -50;
+    scene.add( floor );
 
 
     renderer = new THREE.WebGLRenderer( { antialias: true } );
