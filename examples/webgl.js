@@ -25,10 +25,12 @@ function init() {
 //Declaration des textures
 
     const texture_wall = new THREE.TextureLoader().load( 'textures/wall.jpg' );
+    const texture_wall2 = new THREE.TextureLoader().load( 'textures/wall2.jfif' );
     const texture_cone = new THREE.TextureLoader().load( 'textures/cone.jpg' );
     const texture_water = new THREE.TextureLoader().load( 'textures/watertest.jpg' );
     const texture_wood = new THREE.TextureLoader().load( 'textures/wood.jpg' );
     const texture_grass = new THREE.TextureLoader().load( 'textures/grass.jpg' );
+    const texture_dirt = new THREE.TextureLoader().load( 'textures/dirt.jfif' );
 
 
 //LES CONES / chapeau des tours
@@ -81,43 +83,45 @@ function init() {
 //CYLINDRES / base des tours
 
     //Base tours des coins
-    const geometry2 = new THREE.CylinderGeometry( 25, 25, 130, 100);
+    const geometry2 = new THREE.CylinderGeometry( 25, 25, 150, 100);
     const material2 = new THREE.MeshBasicMaterial( { map: texture_wall } );
 
     cylinder_arG = new THREE.Mesh( geometry2, material2 );
     cylinder_arG.position.x = 200;
-    cylinder_arG.position.y = 15;
+    cylinder_arG.position.y = 5;
     cylinder_arG.position.z = 200;
     scene.add( cylinder_arG );
 
     cylinder_arD = new THREE.Mesh( geometry2, material2 );
     cylinder_arD.position.x = -200;
-    cylinder_arD.position.y = 15;
+    cylinder_arD.position.y = 5;
     cylinder_arD.position.z = 200;
     scene.add( cylinder_arD );
 
     cylinder_avG = new THREE.Mesh( geometry2, material2 );
     cylinder_avG.position.x = 200;
-    cylinder_avG.position.y = 15;
+    cylinder_avG.position.y = 5;
     cylinder_avG.position.z = -200;
     scene.add( cylinder_avG );
 
     cylinder_avD = new THREE.Mesh( geometry2, material2 );
     cylinder_avD.position.x = -200;
-    cylinder_avD.position.y = 15;
+    cylinder_avD.position.y = 5;
     cylinder_avD.position.z = -200;
     scene.add( cylinder_avD );
 
     //Bases tours milieu
-    const geometry11 = new THREE.CylinderGeometry( 18, 18, 100, 100);
+    const geometry11 = new THREE.CylinderGeometry( 18, 18, 120, 100);
 
     cylinder_avMD = new THREE.Mesh( geometry11, material2 );
     cylinder_avMD.position.x = -50;
+    cylinder_avMD.position.y = -10;
     cylinder_avMD.position.z = -200;
     scene.add( cylinder_avMD );
 
     cylinder_avMG = new THREE.Mesh( geometry11, material2 );
     cylinder_avMG.position.x = 50;
+    cylinder_avMG.position.y = -10;
     cylinder_avMG.position.z = -200;
     scene.add( cylinder_avMG );
 
@@ -125,32 +129,32 @@ function init() {
 //LES WALLS
 
   //Mur arrière
-    const geometry3 = new THREE.BoxGeometry( 400, 80, 10);
-    const material3 = new THREE.MeshBasicMaterial( { map: texture_wall } );
+    const geometry3 = new THREE.BoxGeometry( 400, 125, 20);
 
-    wall_ar = new THREE.Mesh( geometry3, material3 );
+
+    wall_ar = new THREE.Mesh( geometry3, material2 );
     wall_ar.position.z = 200;
-    wall_ar.position.y = -10;
+    wall_ar.position.y = -5;
     scene.add( wall_ar );
 
   //Mur avant
-    const geometry5 = new THREE.BoxGeometry( 150, 80, 10);
+    const geometry5 = new THREE.BoxGeometry( 150, 100, 20);
 
-    wall_avG = new THREE.Mesh( geometry5, material3 );
+    wall_avG = new THREE.Mesh( geometry5, material2 );
     wall_avG.position.x = 137.5;
     wall_avG.position.z = -200;
-    wall_avG.position.y = -10;
+    wall_avG.position.y = -15;
     scene.add( wall_avG );
 
-    wall_avD = new THREE.Mesh( geometry5, material3 );
+    wall_avD = new THREE.Mesh( geometry5, material2 );
     wall_avD.position.x = -137.5;
     wall_avD.position.z = -200;
-    wall_avD.position.y = -10;
+    wall_avD.position.y = -15;
     scene.add( wall_avD );
 
     //Pont-levis
     const material6 = new THREE.MeshBasicMaterial( { map: texture_wood } );
-    const geometry6 = new THREE.BoxGeometry( 60, 5, 120);
+    const geometry6 = new THREE.BoxGeometry( 65, 5, 120);
 
     pont_levis = new THREE.Mesh( geometry6, material6 );
     pont_levis.position.z = -260;
@@ -158,17 +162,17 @@ function init() {
     scene.add( pont_levis );
 
   //Mur droit
-    const geometry4 = new THREE.BoxGeometry( 10, 80, 400);
+    const geometry4 = new THREE.BoxGeometry( 20, 125, 400);
 
-    wall_D = new THREE.Mesh( geometry4, material3 );
+    wall_D = new THREE.Mesh( geometry4, material2 );
     wall_D.position.x = -200;
-    wall_D.position.y = -10;
+    wall_D.position.y = -5;
     scene.add( wall_D );
 
   //Mur gauche
-    wall_G = new THREE.Mesh( geometry4, material3 );
+    wall_G = new THREE.Mesh( geometry4, material2 );
     wall_G.position.x = 200;
-    wall_G.position.y = -10;
+    wall_G.position.y = -5;
     scene.add( wall_G );
 
 /*
@@ -197,12 +201,11 @@ CHAMBRE
 
 //LE FLOOR (le sol)
 
-    const material4 = new THREE.MeshBasicMaterial( { map: texture_wall } );
-    const geometry7 = new THREE.BoxGeometry( 400, 5, 400);
+    const material4 = new THREE.MeshBasicMaterial( { map: texture_dirt } );
+    const geometry7 = new THREE.BoxGeometry( 400, 40, 400);
 
     floor = new THREE.Mesh( geometry7, material4 );
-    floor.position.x = 0;
-    floor.position.y = -45;
+    floor.position.y = -65;
     scene.add( floor );
 
 //WATER
@@ -211,32 +214,32 @@ CHAMBRE
     const geometry13 = new THREE.BoxGeometry( 600, 10, 610);
 
     water = new THREE.Mesh( geometry13, material5 );
-    water.position.y = -60;
+    water.position.y = -70;
     scene.add( water );
 
 //Grass
     const material7 = new THREE.MeshBasicMaterial( { map: texture_grass } );
-    const geometry14 = new THREE.BoxGeometry( 1200, 15, 300);
-    const geometry15 = new THREE.BoxGeometry( 300, 15, 1200);
+    const geometry14 = new THREE.BoxGeometry( 1200, 40, 300);
+    const geometry15 = new THREE.BoxGeometry( 300, 40, 1200);
 
     grass_av = new THREE.Mesh( geometry14, material7 );
     grass_av.position.z = -450;
-    grass_av.position.y = -55;
+    grass_av.position.y = -70;
     scene.add( grass_av );
 
     grass_ar = new THREE.Mesh( geometry14, material7 );
     grass_ar.position.z = 450;
-    grass_ar.position.y = -55;
+    grass_ar.position.y = -70;
     scene.add( grass_ar );
 
     grass_D = new THREE.Mesh( geometry15, material7 );
     grass_D.position.x = -450;
-    grass_D.position.y = -55;
+    grass_D.position.y = -70;
     scene.add( grass_D );
 
     grass_G = new THREE.Mesh( geometry15, material7 );
     grass_G.position.x = 450;
-    grass_G.position.y = -55;
+    grass_G.position.y = -70;
     scene.add( grass_G );
 
 
