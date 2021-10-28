@@ -17,6 +17,7 @@ animate();
 
 function init() {
     let el = new Controller('ok', data.getMaterials());
+    el.getMaterial();
 //Initialisation de la caméra
     camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 2000 );
     camera.position.z = -600;
