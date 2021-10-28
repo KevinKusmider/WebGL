@@ -1,5 +1,7 @@
 import * as THREE from '../build/three.module.js';
 import { OrbitControls } from './jsm/controls/OrbitControls.js';
+import * as data from './data.js';
+import { Controller } from './controller.js';
 
 let camera, scene, renderer;
 let cone_arG, cone_arD, cone_avD, cone_avG, cone_avMG, cone_avMD;
@@ -14,7 +16,7 @@ init();
 animate();
 
 function init() {
-
+    let el = new Controller('ok', data.getMaterials());
 //Initialisation de la caméra
     camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 2000 );
     camera.position.z = -600;
