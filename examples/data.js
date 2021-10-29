@@ -54,17 +54,10 @@ function getElements() {
             'material': 'BasicMaterial',
             'geometry': [25, 40, 20],
             'position': [200, 100, -200]
-        },
-        '': {
-            'type': 'cone',
-            'texture': 'texture_cone',
-            'material': 'BasicMaterial',
-            'geometry': [25, 40, 20],
-            'position': [200, 100, -200]
-        },
+        }
     }
 
     return data;
 }
 
-export { getElements, getMaterials };
+export { getElements, getTexture };
