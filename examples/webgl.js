@@ -4,8 +4,8 @@ import { OrbitControls } from './jsm/controls/OrbitControls.js';
 let camera, scene, renderer;
 let cone_arG, cone_arD, cone_avD, cone_avG, cone_avMG, cone_avMD;
 let floor;
-let cylinder_arG, cylinder_arD, cylinder_avG, cylinder_avD, cylinder_avMD, cylinder_avMG;
-let wall_ar, wall_avG, wall_avD, pont_levis, wall_D, wall_G, wall5, wall6, wall7;
+let cylinder_arG, cylinder_arD, cylinder_avG, cylinder_avD, cylinder_arDbis, cylinder_avMD, cylinder_avMG;
+let wall_ar, wall_avG, wall_avD, pont_levis, wall_D, wall_G, wall5, wall6, wall7, wall_avM;
 let water;
 let grass_av, grass_ar, grass_D, grass_G;
 let controls;
@@ -36,91 +36,105 @@ function init() {
 //LES CONES / chapeau des tours
 
     //Chapeau tours des coins
-    const geometry = new THREE.ConeGeometry( 25, 40, 20);
+
     const material = new THREE.MeshBasicMaterial( { map: texture_cone } );
 
-    cone_arG = new THREE.Mesh( geometry, material );
-    cone_arG.position.x = 200;
-    cone_arG.position.y = 100;
-    cone_arG.position.z = 200;
+    const geometry17 = new THREE.ConeGeometry( 75, 100, 70);
+
+    cone_arG = new THREE.Mesh( geometry17, material );
+    cone_arG.position.x = 175;
+    cone_arG.position.y = 210;
+    cone_arG.position.z = 175;
     scene.add( cone_arG );
 
-    cone_arD = new THREE.Mesh( geometry, material );
-    cone_arD.position.x = -200;
-    cone_arD.position.y = 100;
-    cone_arD.position.z = 200;
-    scene.add( cone_arD );
+    // cone_arD = new THREE.Mesh( geometry, material );
+    // cone_arD.position.x = -200;
+    // cone_arD.position.y = 100;
+    // cone_arD.position.z = 200;
+    // scene.add( cone_arD );
+
+    const geometry = new THREE.ConeGeometry( 50, 65, 50);
 
     cone_avD = new THREE.Mesh( geometry, material );
-    cone_avD.position.x = -200;
-    cone_avD.position.y = 100;
-    cone_avD.position.z = -200;
+    cone_avD.position.x = -190;
+    cone_avD.position.y = 125;
+    cone_avD.position.z = -190;
     scene.add( cone_avD );
 
     cone_avG = new THREE.Mesh( geometry, material );
-    cone_avG.position.x = 200;
-    cone_avG.position.y = 100;
-    cone_avG.position.z = -200;
+    cone_avG.position.x = 190;
+    cone_avG.position.y = 125;
+    cone_avG.position.z = -190;
     scene.add( cone_avG );
 
 
     // Chapeau des tours de l'entrée
-    const geometry12 = new THREE.ConeGeometry( 18, 30 , 20);
-
-    cone_avMG = new THREE.Mesh( geometry12, material );
-    cone_avMG.position.x = 50;
-    cone_avMG.position.y = 65;
-    cone_avMG.position.z = -200;
-    scene.add( cone_avMG );
-
-    cone_avMD = new THREE.Mesh( geometry12, material );
-    cone_avMD.position.x = -50;
-    cone_avMD.position.y = 65;
-    cone_avMD.position.z = -200;
-    scene.add( cone_avMD );
+    // const geometry12 = new THREE.ConeGeometry( 18, 30 , 20);
+    //
+    // cone_avMG = new THREE.Mesh( geometry12, material );
+    // cone_avMG.position.x = 50;
+    // cone_avMG.position.y = 65;
+    // cone_avMG.position.z = -200;
+    // scene.add( cone_avMG );
+    //
+    // cone_avMD = new THREE.Mesh( geometry12, material );
+    // cone_avMD.position.x = -50;
+    // cone_avMD.position.y = 65;
+    // cone_avMD.position.z = -200;
+    // scene.add( cone_avMD );
 
 
 //CYLINDRES / base des tours
 
     //Base tours des coins
-    const geometry2 = new THREE.CylinderGeometry( 25, 25, 150, 100);
-    const material2 = new THREE.MeshBasicMaterial( { map: texture_wall } );
 
+    const material2 = new THREE.MeshBasicMaterial( { map: texture_wall2 } );
+
+    const geometry2 = new THREE.CylinderGeometry( 75, 75, 250, 100);
     cylinder_arG = new THREE.Mesh( geometry2, material2 );
-    cylinder_arG.position.x = 200;
-    cylinder_arG.position.y = 5;
-    cylinder_arG.position.z = 200;
+    cylinder_arG.position.x = 175;
+    cylinder_arG.position.y = 35;
+    cylinder_arG.position.z = 175;
     scene.add( cylinder_arG );
 
-    cylinder_arD = new THREE.Mesh( geometry2, material2 );
-    cylinder_arD.position.x = -200;
-    cylinder_arD.position.y = 5;
-    cylinder_arD.position.z = 200;
+    const geometry18 = new THREE.CylinderGeometry( 70, 70, 230, 100);
+    cylinder_arD = new THREE.Mesh( geometry18, material2 );
+    cylinder_arD.position.x = -175;
+    cylinder_arD.position.y = 30;
+    cylinder_arD.position.z = 175;
     scene.add( cylinder_arD );
 
-    cylinder_avG = new THREE.Mesh( geometry2, material2 );
-    cylinder_avG.position.x = 200;
+    const geometry19 = new THREE.CylinderGeometry( 85, 85, 40, 100);
+    cylinder_arDbis = new THREE.Mesh( geometry19, material2 );
+    cylinder_arDbis.position.x = -175;
+    cylinder_arDbis.position.y = 150;
+    cylinder_arDbis.position.z = 175;
+    scene.add( cylinder_arDbis );
+
+    const geometry16 = new THREE.CylinderGeometry( 50, 50, 175, 100);
+    cylinder_avG = new THREE.Mesh( geometry16, material2 );
+    cylinder_avG.position.x = 190;
     cylinder_avG.position.y = 5;
-    cylinder_avG.position.z = -200;
+    cylinder_avG.position.z = -190;
     scene.add( cylinder_avG );
 
-    cylinder_avD = new THREE.Mesh( geometry2, material2 );
-    cylinder_avD.position.x = -200;
+    cylinder_avD = new THREE.Mesh( geometry16, material2 );
+    cylinder_avD.position.x = -190;
     cylinder_avD.position.y = 5;
-    cylinder_avD.position.z = -200;
+    cylinder_avD.position.z = -190;
     scene.add( cylinder_avD );
 
     //Bases tours milieu
-    const geometry11 = new THREE.CylinderGeometry( 18, 18, 120, 100);
+    const geometry11 = new THREE.CylinderGeometry( 25, 25, 120, 100);
 
     cylinder_avMD = new THREE.Mesh( geometry11, material2 );
-    cylinder_avMD.position.x = -50;
+    cylinder_avMD.position.x = -57;
     cylinder_avMD.position.y = -10;
     cylinder_avMD.position.z = -200;
     scene.add( cylinder_avMD );
 
     cylinder_avMG = new THREE.Mesh( geometry11, material2 );
-    cylinder_avMG.position.x = 50;
+    cylinder_avMG.position.x = 57;
     cylinder_avMG.position.y = -10;
     cylinder_avMG.position.z = -200;
     scene.add( cylinder_avMG );
@@ -129,7 +143,7 @@ function init() {
 //LES WALLS
 
   //Mur arrière
-    const geometry3 = new THREE.BoxGeometry( 400, 125, 20);
+    const geometry3 = new THREE.BoxGeometry( 400, 125, 80);
 
 
     wall_ar = new THREE.Mesh( geometry3, material2 );
@@ -160,6 +174,13 @@ function init() {
     pont_levis.position.z = -260;
     pont_levis.position.y = -45;
     scene.add( pont_levis );
+
+    // const geometry21 = new THREE.BoxGeometry( 90, 25, 10);
+    //
+    // wall_avM = new THREE.Mesh( geometry21, material2 );
+    // wall_avM.position.z = -200;
+    // wall_avM.position.y = 30;
+    // scene.add( wall_avM );
 
   //Mur droit
     const geometry4 = new THREE.BoxGeometry( 20, 125, 400);
