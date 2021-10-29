@@ -16,25 +16,34 @@ animate();
 
 function init() {
 
+/**********************
+    INITIALISATIONS
+************************/
 //Initialisation de la caméra
     camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 2000 );
     camera.position.z = -600;
     camera.position.y = 100;
 
+// Initialisation de la scène
     scene = new THREE.Scene();
 
-//Declaration des textures
-
+// Initialisation du renderer
     renderer = new THREE.WebGLRenderer( { antialias: true } );
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
     document.body.appendChild( renderer.domElement );
 
-    /*
-        CONTROLS de la caméra
-    */
+/**********************
+    COTROLS
+************************/
     controls = new OrbitControls(camera, renderer.domElement);
     window.addEventListener( 'resize', onWindowResize );
+
+/**********************
+    BUILDING
+************************/
+
+    creation.createCylinder([0,0,0], [20,20,20], ['texture_wall'], scene);
 
 }
 
