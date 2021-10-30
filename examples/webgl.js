@@ -39,96 +39,82 @@ function init() {
     controls = new OrbitControls(camera, renderer.domElement);
     window.addEventListener( 'resize', onWindowResize );
 
+
+
 /**********************
     BUILDING
 ************************/
 
-    creation.createCylinder([0,0,0], [20,20,20], ['texture_wall'], scene);
+// Towers
 
-//Les Cones
+  // Tower behind left
+  creation.createCylinder([150, 65, 150], [100, 100, 300, 100], ['texture_wall2'], scene);
+  creation.createCone([150, 275, 150], [100, 120, 100], ['texture_cone'], scene);
 
-    creation.createCone([175, 210, 175], [75, 100, 70], ['texture_cone'], scene);
+  // Tower behind right
+  creation.createCylinder([-175, 30, 175], [70, 70, 230, 100], ['texture_wall2'], scene); // Base
+  creation.createCylinder([-175, 150, 175], [85, 85, 40, 100], ['texture_wall2'], scene); // Haut de la tour
 
-    creation.createCone([-190, 125, -190], [50, 65, 50], ['texture_cone'], scene);
+  // Tower front right
+  creation.createCylinder([-190, 5, -190], [50, 50, 175, 100], ['texture_wall2'], scene);
+  creation.createCone([-190, 125, -190], [50, 65, 50], ['texture_cone'], scene);
 
-    creation.createCone([190, 125, -190], [50, 65, 50], ['texture_cone'], scene);
+  // Tower front middle right
+  creation.createCylinder([-57, -5, -200], [25, 25, 160, 100], ['texture_wall2'], scene);
 
-    creation.createCone([175, 210, 175], [75, 100, 70], ['texture_cone'], scene);
+  // Tower front middle left
+  creation.createCylinder([57, -5, -200], [25, 25, 160, 100], ['texture_wall2'], scene);
 
-
-//Les Cylindres
-
-    creation.createCylinder([175, 35, 175], [75, 75, 250, 100], ['texture_wall2'], scene);
-
-    creation.createCylinder([-175, 30, 175], [70, 70, 230, 100], ['texture_wall2'], scene);
-
-    creation.createCylinder([-175, 150, 175], [85, 85, 40, 100], ['texture_wall2'], scene);
-
-    creation.createCylinder([190, 5, -190], [50, 50, 175, 100], ['texture_wall2'], scene);
-
-    creation.createCylinder([-190, 5, -190], [50, 50, 175, 100], ['texture_wall2'], scene);
-
-//Bases tours milieu
-
-    creation.createCylinder([-57, -10, -200], [25, 25, 120, 100], ['texture_wall2'], scene);
-
-    creation.createCylinder([57, -10, -200], [25, 25, 120, 100], ['texture_wall2'], scene);
-
-
-//LES WALLS
-
-//Mur arrière
-
-    creation.createBox([0, -5, 200], [400, 125, 80], ['texture_wall2'], scene);
-
-//Mur avant
-
-    creation.createBox([137.5, -15, -200], [150, 100, 20], ['texture_wall2'], scene);
-
-    creation.createBox([-137.5, -15, -200], [150, 100, 20], ['texture_wall2'], scene);
-
-
-//Pont-levis
-
-    creation.createBox([0, -45, -260], [65, 5, 120], ['texture_wood'], scene);
-
-
-//Mur droit
-
-    creation.createBox([-200, -5, 0], [20, 125, 400], ['texture_wall2'], scene);
-
-
-//Mur gauche
-
-    creation.createBox([200, -5, 0], [20, 125, 400], ['texture_wall2'], scene);
-
-// CHAMBRE
+  // Tower front left
+  creation.createCylinder([190, 5, -190], [50, 50, 175, 100], ['texture_wall2'], scene);
+  creation.createCone([190, 125, -190], [50, 65, 50], ['texture_cone'], scene);
 
 
 
-//LE FLOOR (le sol)
+// Walls
 
-    creation.createBox([0, -65, 0], [400, 40, 400], ['texture_dirt'], scene);
+  // Wall behind
+  creation.createBox([10, -5, 150], [270, 120, 110], ['texture_wall2'], scene);
 
+  // Wall left
+  creation.createBox([195, -5, 0], [30, 125, 400], ['texture_wall2'], scene);
 
-//WATER
+  // Wall front left
+  creation.createBox([137.5, -15, -200], [150, 100, 20], ['texture_wall2'], scene);
 
-    creation.createBox([0, -70, 0], [600, 10, 610], ['texture_water'], scene);
+  // Drawbridge
+  creation.createBox([0, -45, -252.5], [65, 5, 105], ['texture_wood'], scene);
 
+  // Wall front right
+  creation.createBox([-137.5, -15, -200], [150, 100, 20], ['texture_wall2'], scene);
 
-//Grass
-
-    creation.createBox([0, -70, -450], [1200, 40, 300], ['texture_grass'], scene);
-
-    creation.createBox([0, -70, 450], [1200, 40, 300], ['texture_grass'], scene);
-
-    creation.createBox([-450, -70, 0], [300, 40, 1200], ['texture_grass'], scene);
-
-    creation.createBox([450, -70, 0], [300, 40, 1200], ['texture_grass'], scene);
-
-
+  // Wall right
+  creation.createBox([-195, -5, 0], [30, 125, 400], ['texture_wall2'], scene);
 
 
+
+// Floor
+
+  // Floor into castle
+  creation.createBox([0, -65, 0], [400, 40, 400], ['texture_dirt'], scene);
+
+  // Water
+  creation.createBox([0, -70, 0], [600, 10, 610], ['texture_water'], scene);
+
+  // Grass
+  creation.createBox([0, -70, -450], [1200, 40, 300], ['texture_grass'], scene);
+
+  creation.createBox([0, -70, 450], [1200, 40, 300], ['texture_grass'], scene);
+
+  creation.createBox([-450, -70, 0], [300, 40, 1200], ['texture_grass'], scene);
+
+  creation.createBox([450, -70, 0], [300, 40, 1200], ['texture_grass'], scene);
+
+
+
+/**********************
+    Camera movement
+************************/
 
 }
 
