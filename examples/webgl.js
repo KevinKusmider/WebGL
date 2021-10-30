@@ -34,7 +34,7 @@ function init() {
     document.body.appendChild( renderer.domElement );
 
 /**********************
-    COTROLS
+    CONTROLS
 ************************/
     controls = new OrbitControls(camera, renderer.domElement);
     window.addEventListener( 'resize', onWindowResize );
@@ -58,16 +58,21 @@ function init() {
   // Tower front right
   creation.createCylinder([-190, 5, -190], [50, 50, 175, 100], ['texture_wall2'], scene);
   creation.createCone([-190, 125, -190], [50, 65, 50], ['texture_cone'], scene);
+  creation.createCylinder([-155, 55, -160], [30, 30, 7.5, 50], ['texture_wood'], scene); // Zone pour marcher
 
   // Tower front middle right
-  creation.createCylinder([-57, -5, -200], [25, 25, 160, 100], ['texture_wall2'], scene);
+  creation.createCylinder([-57, 0, -200], [25, 25, 170, 100], ['texture_wall2'], scene);
+  creation.createCylinder([-57, 87.5, -200], [30, 30, 20, 100], ['texture_wall2'], scene);
 
   // Tower front middle left
-  creation.createCylinder([57, -5, -200], [25, 25, 160, 100], ['texture_wall2'], scene);
+  creation.createCylinder([57, 0, -200], [25, 25, 170, 100], ['texture_wall2'], scene);
+  creation.createCylinder([57, 87.5, -200], [30, 30, 20, 100], ['texture_wall2'], scene);
 
   // Tower front left
   creation.createCylinder([190, 5, -190], [50, 50, 175, 100], ['texture_wall2'], scene);
   creation.createCone([190, 125, -190], [50, 65, 50], ['texture_cone'], scene);
+  creation.createCylinder([155, 55, -160], [30, 30, 7.5, 50], ['texture_wood'], scene); // Zone pour marcher
+
 
 
 
@@ -77,25 +82,52 @@ function init() {
   creation.createBox([10, -5, 150], [270, 120, 110], ['texture_wall2'], scene);
 
   // Wall left
-  creation.createBox([195, -5, 0], [30, 125, 400], ['texture_wall2'], scene);
+  creation.createBox([195, 0, 0], [20, 140, 400], ['texture_wall2'], scene);
+  creation.createBox([170, 55, -70], [30, 7.5, 165], ['texture_wood'], scene); // Zone pour marcher
+  //Boucle remparts wall left
+   let z = 32;
+   for (var i = 0; i < 6; i++) {
+   creation.createBox([195, 75, z], [20, 10, 15], ['texture_wall2'], scene);
+   z = z - 30;
+   }
 
   // Wall front left
-  creation.createBox([137.5, -15, -200], [150, 100, 20], ['texture_wall2'], scene);
+  creation.createBox([137.5, 0, -200], [150, 140, 20], ['texture_wall2'], scene);
+  creation.createBox([105, 55, -175], [140, 7.5, 30], ['texture_wood'], scene); // Zone pour marcher
+  //Boucle remparts wall front left
+   let x = 125;
+   for (var i = 0; i < 2; i++) {
+   creation.createBox([x, 75, -200], [15, 10, 20], ['texture_wall2'], scene);
+   x = x - 25;
+   }
 
   // Drawbridge
-  creation.createBox([0, -45, -252.5], [65, 5, 105], ['texture_wood'], scene);
+  creation.createBox([0, 55, -200], [80, 20, 20], ['texture_wall2'], scene);
+  creation.createBox([0, -45, -252.5], [65, 5, 105], ['texture_wood'], scene); // Mur au-dessus
 
   // Wall front right
-  creation.createBox([-137.5, -15, -200], [150, 100, 20], ['texture_wall2'], scene);
+  creation.createBox([-137.5, 0, -200], [150, 140, 20], ['texture_wall2'], scene);
+  creation.createBox([-105, 55, -175], [140, 7.5, 30], ['texture_wood'], scene); // Zone pour marcher
+  //Boucle remparts wall front right
+   let x2 = -125;
+   for (var i = 0; i < 2; i++) {
+   creation.createBox([x2, 75, -200], [15, 10, 20], ['texture_wall2'], scene);
+   x2 = x2 + 25;
+   }
 
   // Wall right
-  creation.createBox([-195, -5, 0], [30, 125, 400], ['texture_wall2'], scene);
-
-
+  creation.createBox([-195, 0, 0], [20, 140, 400], ['texture_wall2'], scene);
+  creation.createBox([-170, 55, -10], [30, 7.5, 300], ['texture_wood'], scene); // Zone pour marcher
+  //Boucle remparts wall right
+   let z4 = 90;
+   for (var i = 0; i < 8; i++) {
+   creation.createBox([-195, 75, z4], [20, 10, 15], ['texture_wall2'], scene);
+   z4 = z4 - 30;
+   }
 
 // Floor
 
-  // Floor into castle
+  // Floor inside castle
   creation.createBox([0, -65, 0], [400, 40, 400], ['texture_dirt'], scene);
 
   // Water
@@ -109,6 +141,15 @@ function init() {
   creation.createBox([-450, -70, 0], [300, 40, 1200], ['texture_grass'], scene);
 
   creation.createBox([450, -70, 0], [300, 40, 1200], ['texture_grass'], scene);
+
+// Stairs
+     let y = -50;
+     let x3 = 76;
+     for (var i = 0; i < 14; i++) {
+       creation.createBox([x3,y,44], [10,7.5,65], ['texture_wall2'], scene );
+       y = y + 7.5;
+       x3 = x3 + 8;
+     }
 
 
 
