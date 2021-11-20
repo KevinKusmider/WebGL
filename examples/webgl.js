@@ -1,5 +1,6 @@
 import * as THREE from '../build/three.module.js';
 import { OrbitControls } from './jsm/controls/OrbitControls.js';
+import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
 import * as creation from './Fonctions.js';
 
 let camera, scene, renderer, controls;
@@ -175,9 +176,35 @@ function init() {
 
 
 
-    /**********************
-        Camera movement
-    ************************/
+/**********************
+     ANIMALS
+************************/
+
+    const light = new THREE.AmbientLight(0xffffff, 1);
+    light.position.set(375, 50,10);
+    scene.add(light);
+
+
+    const loader = new GLTFLoader();
+
+    loader.load(
+        // Ressource URL
+        './3Delements/Horse/scene.gltf', 
+        // Called when the ressource is loaded
+        function ( gltf ) {
+            const element = gltf.scene;
+            
+            let elementMesh = gltf.scene.children[0];
+            elementMesh.scale.set(10, 10, 10);
+
+            element.position.set(375,-10,3);
+            scene.add(element);
+        },  
+        // called while loading is progressing
+        function ( xhr ) {
+            console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+        }
+    );
 
 }
 
