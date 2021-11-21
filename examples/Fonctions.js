@@ -6,7 +6,7 @@ import * as THREE from '../build/three.module.js';
   @return { object } texture
 */
 function getTexture(name) {
-  const textures = {
+  const textures = {    // on crée un tableau qui contient toutes les textures que l'on utilise
     'texture_wall' : 'textures/wall.jpg',
     'texture_wall2': 'textures/wall2.jfif',
     'texture_cone': 'textures/cone.jpg',
@@ -16,10 +16,10 @@ function getTexture(name) {
     'texture_dirt': 'textures/dirt.jfif',
   }
 
-  let path = textures[name];
+  let path = textures[name];  // On va chercher le chemin qui correspond au nom de la texture
 
   if(path !== undefined) {
-    return new THREE.TextureLoader().load( path);
+    return new THREE.TextureLoader().load( path); // create and return the texture
   } else {
     console.log('Texture non existante');
     return null;
@@ -33,48 +33,49 @@ function getTexture(name) {
   @param { string } type de la matière
   @return { object } material
 */
-function getMaterial(texture_name, type = 'basic') {
+function getMaterial(texture_name, type = 'basic') { //définit la valeur par défaut de type (ici basic)
   let texture = getTexture(texture_name);
-  switch (type) {
+  switch (type) { // On utilise un switch au cas ou on veuille rajouter des matériaux plus tard
     case 'basic':
       if(texture !== null) {
-        return new THREE.MeshBasicMaterial( { map: texture } );
+        return new THREE.MeshBasicMaterial( { map: texture } );   // cas où le MESH utilisé est le mesh basic (default)
       }
+
     default:
       console.log('Le type de material spécifié est introuvable.');
       return null;
-  }  
+  }
 }
 
 /*
   Appelée pour créer un cone
   @param { array } position x,y,z
-  @param { array } geometry
-  @param { array } nom de texture et type de la matière
+  @param { array } geometry , paramètres du cone (taille,radius,segment)
+  @param { array } nom de texture et type de la matière (basic par défaut)
   @param { scene } facultatif si ajouté affiche directement l'objet sans le renvoyer
   @return { object / bool } S'il n'y a pas de paramètre scene renvoie directement le cone sinon ça ajoute le cone à la scène et renvoie true
 */
-function createCone(position, geometry_info, material_info, scene = null ) {
-  const geometry = new THREE.ConeGeometry( geometry_info[0], geometry_info[1], geometry_info[2]);
-  const material = getMaterial(material_info[0], material_info[1]);
+function createCone(position, geometry_info, material_info, scene = null ) { // scene = null --> par défaut scene n'est pas pris en compte dans les paramètres, sinon ranger dans un var
+  const geometry = new THREE.ConeGeometry( geometry_info[0], geometry_info[1], geometry_info[2]); // On crée un nouvel élément qui prend en compte la géométrie de notre objet que l'on range dans la constante geometry
+  const material = getMaterial(material_info[0], material_info[1]); // la constante material récupère le résultat de la fonction getMaterial (la texture)
 
-  if(geometry !== undefined && material !== null) {
+  if(geometry !== undefined && material !== null) { // On vérifie que geometry et materiel sont définis
     const cone = new THREE.Mesh( geometry, material );
     cone.position.x = position[0];
     cone.position.y = position[1];
     cone.position.z = position[2];
-    
+
     if(scene == null) {
-      return cone;
+      return cone; // si scene = null alors l'objet créer est à ranger dans une var (utilisé pour faire des traitements sur l'objet)
     } else {
-      scene.add(cone)
+      scene.add(cone) // si on ajoute scene en paramètre alors ce l'objet créer est affiché
       return true;
     }
   } else {
     console.log('Probleme lors de la création du cone');
     return null;
   }
-    
+
 }
 
 
@@ -95,7 +96,7 @@ function createBox(position, geometry_info, material_info, scene = null) {
     wall.position.x = position[0];
     wall.position.y = position[1];
     wall.position.z = position[2];
-  
+
     if(scene == null) {
       return wall;
     } else {
@@ -129,7 +130,7 @@ function createCylinder(position, geometry_info, material_info, scene = null) {
     cylinder.position.y = position[1];
     cylinder.position.z = position[2];
     scene.add(cylinder);
-  
+
     if(scene == null) {
       return cylinder;
     } else {
@@ -144,4 +145,4 @@ function createCylinder(position, geometry_info, material_info, scene = null) {
 }
 
 
-export { getTexture, getMaterial, createCone, createBox, createCylinder }
+export { getTexture, getMaterial, createCone, createBox, createCylinder } // pour pouvoir utiliser les fonctions dans un autre fichier
