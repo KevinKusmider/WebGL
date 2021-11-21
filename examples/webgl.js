@@ -1,5 +1,6 @@
 import * as THREE from '../build/three.module.js';
 import { OrbitControls } from './jsm/controls/OrbitControls.js';
+import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
 import * as creation from './Fonctions.js';
 
 let camera, scene, renderer, controls;
@@ -33,8 +34,8 @@ function init() {
     document.body.appendChild(renderer.domElement);
 
 // Initialisation Raycaster
-    click = new THREE.Vector2();
-    raycaster = new THREE.Raycaster();
+    click = new THREE.Vector2(); // capture x & y position in Vector2 var
+    raycaster = new THREE.Raycaster(); // capture the clicked element, mouse picking
 
 // Event Listenners
     window.addEventListener('click', onClick); // When click
@@ -43,9 +44,12 @@ function init() {
 /**********************
     CONTROLS
 ************************/
-    controls = new OrbitControls(camera, renderer.domElement);
+    controls = new OrbitControls(camera, renderer.domElement); // define methode of controls
     controls.maxPolarAngle = Math.PI / 2;
     controls.minPolarAngle = Math.PI / 4;
+    controls.maxDistance = 1000; //limit camera zoom outward
+    controls.minDistance = 100; //limit camera zoom inward
+    controls.enablePan = false; //Stop camera panning
     controls.update();
 
 /**********************
@@ -111,39 +115,38 @@ function init() {
     }
 
     // Drawbridge
-    creation.createBox([0, 55, -200], [80, 20, 20], ['texture_wall2'], scene); // Mur au-dessus
-    creation.createBox([0, -55, -210], [80, 20, 20], ['texture_wall2'], scene); // Mur en-dessous
-    pivot = new THREE.Group();
-    pivot.position.set( 32, -45, -200);
-    let bridge = creation.createBox([-32, 0, -52.5], [65, 5, 105], ['texture_wood'])
-    bridge.userData.draggable = true;
-    bridge.userData.name = "bridge";
-    pivot.userData.status = "down";
-    pivot.add(bridge);
-    scene.add(pivot);
-    elements['bridge'] = pivot;
+    creation.createBox([0, 68, -200], [80, 15, 20], ['texture_wall2'], scene); // wall above
+    creation.createBox([0, -55, -200], [80, 20, 10], ['texture_wall2'], scene); // wall uper
+    pivot = new THREE.Group(); // permet d'avoir un point d'encrage/origine au milieu de la base de la box
+    pivot.position.set( 32.5, -45, -200); // Dawnbridge's Origin
+    let bridge = creation.createBox([-32, 0, -52.5], [65, 5, 105], ['texture_wood'])  // Création du pont-levis
+    bridge.userData.draggable = true; // Ajout de l'attribut draggable
+    bridge.userData.name = "bridge"; // On définit le nom du pont
+    pivot.userData.status = "up"; // On définit la position du pont-levis au debut
+    pivot.add(bridge); // Ajout du pont dans le groupe pivot
+    scene.add(pivot); // Ajout dans la scène de l'objet pivot
+    elements['bridge'] = pivot;   // On applique la valeur de pivot dans elements['bridge'] // C'est un tableaau si on veut rajouter des éléments plus tard
+    elements['bridge'].rotation.x = 1.5; // Rotation initiale du pont-levis (0 si en bas, 1.5 si il est fermé)
 
     // Wall front right
     creation.createBox([-137.5, 0, -200], [150, 140, 20], ['texture_wall2'], scene);
     creation.createBox([-105, 55, -175], [140, 7.5, 30], ['texture_wood'], scene); // Walk zone
-
-    // Loop remparts wall front right
-    x = -125;
-    for (var i = 0; i < 2; i++) {
-        creation.createBox([x, 75, -200], [15, 10, 20], ['texture_wall2'], scene);
-        x = x + 25;
-    }
+      // Loop remparts wall front right
+      x = -125;
+      for (var i = 0; i < 2; i++) {
+          creation.createBox([x, 75, -200], [15, 10, 20], ['texture_wall2'], scene);
+          x = x + 25;
+      }
 
     // Wall right
     creation.createBox([-195, 0, 0], [20, 140, 400], ['texture_wall2'], scene);
     creation.createBox([-170, 55, -10], [30, 7.5, 300], ['texture_wood'], scene); // Walk zone
-
-    // Loop remparts wall right
-    z = 90;
-    for (var i = 0; i < 8; i++) {
-        creation.createBox([-195, 75, z], [20, 10, 15], ['texture_wall2'], scene);
-        z = z - 30;
-    }
+      // Loop remparts wall right
+      z = 90;
+      for (var i = 0; i < 8; i++) {
+          creation.createBox([-195, 75, z], [20, 10, 15], ['texture_wall2'], scene);
+          z = z - 30;
+      }
 
 // Floor
 
@@ -175,11 +178,37 @@ function init() {
 
 
 
-    /**********************
-        Camera movement
-    ************************/
+/**********************
+     ANIMALS
+************************/
+/*
+    const light = new THREE.AmbientLight(0xffffff, 1);
+    light.position.set(375, 50,10);
+    scene.add(light);
 
-}
+
+    const loader = new GLTFLoader();
+
+    loader.load(
+        // Ressource URL
+        './3Delements/Horse/scene.gltf',
+        // Called when the ressource is loaded
+        function ( gltf ) {
+            const element = gltf.scene;
+
+            let elementMesh = gltf.scene.children[0];
+            elementMesh.scale.set(10, 10, 10);
+
+            element.position.set(375,-10,3);
+            scene.add(element);
+        },
+        // called while loading is progressing
+        function ( xhr ) {
+            console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+        }
+    );
+*/
+} // Fin de la fonction init
 
 function onWindowResize() {
 
@@ -204,8 +233,10 @@ function onClick(event) {
     click.x = (event.clientX / window.innerWidth) * 2 - 1;
     click.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-    raycaster.setFromCamera( click, camera);
-    const found = raycaster.intersectObjects( scene.children, true);
+    raycaster.setFromCamera( click, camera); // mets à jours le rayon selon son origine et une direction
+
+    const found = raycaster.intersectObjects( scene.children, true); // détecte les objets en intérsection avec le rayon cf l.236
+  
     if(found.length > 0 && found[0].object.userData.draggable == true) {
         checkAnimation(found[0].object.userData.name);
     }
