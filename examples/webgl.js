@@ -2,16 +2,27 @@ import * as THREE from '../build/three.module.js';
 import { OrbitControls } from './jsm/controls/OrbitControls.js';
 import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
 import * as creation from './Fonctions.js';
+import { GUI }  from './jsm/libs/dat.gui.module.js';
 
 let camera, scene, renderer, controls;
 
 let x, y, z;
-
+let gui;
 let click, raycaster, pivot;
+let spotLight,lightHelper, shadowCameraHelper, spotLight2,lightHelper2, shadowCameraHelper2;
 let elements = {};
 
+
+// init();
+// animate();
+
 init();
+
 animate();
+
+
+
+
 
 function init() {
 
@@ -32,6 +43,20 @@ function init() {
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
+    // enable les ombres et le type de l'ombre
+     renderer.shadowMap.enabled = true;
+		 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+		 renderer.outputEncoding = THREE.sRGBEncoding;
+
+     function render() {
+
+				//lightHelper.update();
+
+				//shadowCameraHelper.update();
+
+				renderer.render( scene, camera );
+
+			}
 
 // Initialisation Raycaster
     click = new THREE.Vector2(); // capture x & y position in Vector2 var
@@ -40,6 +65,140 @@ function init() {
 // Event Listenners
     window.addEventListener('click', onClick); // When click
     window.addEventListener('resize', onWindowResize); // When window's resized
+
+//lights
+ const ambient = new THREE.AmbientLight( 0xffffff, 0.1 );
+ 				scene.add( ambient );
+
+
+        spotLight = new THREE.SpotLight( 0xffffff, 1);
+				spotLight.position.set( -300,550,0);
+				spotLight.angle = Math.PI / 4;
+				spotLight.penumbra = 0.1;
+				spotLight.decay = 2;
+				spotLight.distance = 1700;
+
+				spotLight.castShadow = true;
+				spotLight.shadow.mapSize.width = 512;
+				spotLight.shadow.mapSize.height = 512;
+				spotLight.shadow.camera.near = 10;
+				spotLight.shadow.camera.far = 200;
+				spotLight.shadow.focus = 1;
+				scene.add( spotLight );
+
+        // lightHelper = new THREE.SpotLightHelper( spotLight );
+				// scene.add( lightHelper );
+        //
+				// shadowCameraHelper = new THREE.CameraHelper( spotLight.shadow.camera );
+				// scene.add( shadowCameraHelper );
+
+        // spotLight2 = new THREE.SpotLight( 0xffffff, 1);
+				// spotLight2.position.set( 0,500,400 );
+				// spotLight2.angle = Math.PI / 4;
+				// spotLight2.penumbra = 0.1;
+				// spotLight2.decay = 2;
+				// spotLight2.distance = 1700;
+        //
+				// spotLight2.castShadow = true;
+				// spotLight2.shadow.mapSize.width = 512;
+				// spotLight2.shadow.mapSize.height = 512;
+				// spotLight2.shadow.camera.near = 10;
+				// spotLight2.shadow.camera.far = 200;
+				// spotLight2.shadow.focus = 1;
+				// scene.add( spotLight2 );
+        //
+        // lightHelper2 = new THREE.SpotLightHelper( spotLight2 );
+				// scene.add( lightHelper2 );
+        //
+				// shadowCameraHelper2 = new THREE.CameraHelper( spotLight2.shadow.camera );
+				// scene.add( shadowCameraHelper2 );
+
+
+        function buildGui() {
+
+				gui = new GUI();
+
+				const params = {
+					'light color': spotLight.color.getHex(),
+					intensity: spotLight.intensity,
+					distance: spotLight.distance,
+					angle: spotLight.angle,
+					penumbra: spotLight.penumbra,
+					decay: spotLight.decay,
+					focus: spotLight.shadow.focus,
+          positionx: spotLight.position.x,
+          positionz: spotLight.position.z,
+				};
+
+				gui.addColor( params, 'light color' ).onChange( function ( val ) {
+
+					spotLight.color.setHex( val );
+					render();
+
+				} );
+        gui.add( params, 'positionx', -1000, 1000 ).onChange( function ( val ) {
+
+					spotLight.position.x = val;
+					render();
+
+				} );
+
+        gui.add( params, 'positionz', -1000, 1000 ).onChange( function ( val ) {
+
+					spotLight.position.z = val;
+					render();
+
+				} );
+
+
+				gui.add( params, 'intensity', 0, 2 ).onChange( function ( val ) {
+
+					spotLight.intensity = val;
+					render();
+
+				} );
+
+
+				gui.add( params, 'distance', 50, 200 ).onChange( function ( val ) {
+
+					spotLight.distance = val;
+					render();
+
+				} );
+
+				gui.add( params, 'angle', 0, Math.PI / 3 ).onChange( function ( val ) {
+
+					spotLight.angle = val;
+					render();
+
+				} );
+
+				gui.add( params, 'penumbra', 0, 1 ).onChange( function ( val ) {
+
+					spotLight.penumbra = val;
+					render();
+
+				} );
+
+				gui.add( params, 'decay', 1, 2 ).onChange( function ( val ) {
+
+					spotLight.decay = val;
+					render();
+
+				} );
+
+				gui.add( params, 'focus', 0, 1 ).onChange( function ( val ) {
+
+					spotLight.shadow.focus = val;
+					render();
+
+				} );
+
+				gui.open();
+
+			}
+      render();
+      buildGui();
 
 /**********************
     CONTROLS
@@ -151,7 +310,7 @@ function init() {
 // Floor
 
     // Floor inside castle
-    creation.createBox([0, -65, 0], [400, 40, 400], ['texture_dirt'], scene);
+   creation.createBox([0, -65, 0], [400, 40, 400], ['texture_dirt'], scene);
 
     // Water
     creation.createBox([0, -70, 0], [600, 10, 610], ['texture_water'], scene);
@@ -159,7 +318,9 @@ function init() {
     // Grass
     creation.createBox([0, -70, -450], [1200, 40, 300], ['texture_grass'], scene);
 
+
     creation.createBox([0, -70, 450], [1200, 40, 300], ['texture_grass'], scene);
+
 
     creation.createBox([-450, -70, 0], [300, 40, 1200], ['texture_grass'], scene);
 
@@ -210,6 +371,7 @@ function init() {
 */
 } // Fin de la fonction init
 
+
 function onWindowResize() {
 
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -236,11 +398,12 @@ function onClick(event) {
     raycaster.setFromCamera( click, camera); // mets à jours le rayon selon son origine et une direction
 
     const found = raycaster.intersectObjects( scene.children, true); // détecte les objets en intérsection avec le rayon cf l.236
-  
+
     if(found.length > 0 && found[0].object.userData.draggable == true) {
         checkAnimation(found[0].object.userData.name);
     }
 }
+
 
 function checkAnimation(name) {
     switch(name) {
