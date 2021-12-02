@@ -1,4 +1,5 @@
 import * as THREE from '../build/three.module.js';
+import { GUI }  from './jsm/libs/dat.gui.module.js';
 
 /*
   Appelée lorsqu'on a besoin de récupérer une texture
@@ -154,7 +155,7 @@ function createCylinder(position, geometry_info, material_info, scene = null) {
 
 // function disco(para) {
 //
-// 
+//
 // let test =
 //   switch (para) {
 //
@@ -168,5 +169,4 @@ function createCylinder(position, geometry_info, material_info, scene = null) {
 //
 // }
 
-
-export { getTexture, getMaterial, createCone, createBox, createCylinder } // pour pouvoir utiliser les fonctions dans un autre fichier
+export { getTexture, getMaterial, createCone, createBox, createCylinder} // pour pouvoir utiliser les fonctions dans un autre fichier

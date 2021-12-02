@@ -21,11 +21,12 @@ init();
 animate();
 
 
+buildGui();
+render();
 
 
 
 function init() {
-
 /**********************
     INITIALISATIONS
 ************************/
@@ -44,19 +45,10 @@ function init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
     // enable les ombres et le type de l'ombre
-     renderer.shadowMap.enabled = true;
-		 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-		 renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.outputEncoding = THREE.sRGBEncoding;
 
-     function render() {
-
-				//lightHelper.update();
-
-				//shadowCameraHelper.update();
-
-				renderer.render( scene, camera );
-
-			}
 
 // Initialisation Raycaster
     click = new THREE.Vector2(); // capture x & y position in Vector2 var
@@ -67,24 +59,24 @@ function init() {
     window.addEventListener('resize', onWindowResize); // When window's resized
 
 //lights
- const ambient = new THREE.AmbientLight( 0xffffff, 0.1 );
- 				scene.add( ambient );
+    const ambient = new THREE.AmbientLight( 0xffffff, 0.1 );
+    scene.add( ambient );
 
 
-        spotLight = new THREE.SpotLight( 0xffffff, 1);
-				spotLight.position.set( -300,550,0);
-				spotLight.angle = Math.PI / 4;
-				spotLight.penumbra = 0.1;
-				spotLight.decay = 2;
-				spotLight.distance = 1700;
+    spotLight = new THREE.SpotLight( 0xffffff, 1);
+    spotLight.position.set( -1000,1000,0);
+    spotLight.angle = Math.PI / 4;
+    spotLight.penumbra = 0.1;
+    spotLight.decay = 2;
+    spotLight.distance = 1700;
 
-				spotLight.castShadow = true;
-				spotLight.shadow.mapSize.width = 512;
-				spotLight.shadow.mapSize.height = 512;
-				spotLight.shadow.camera.near = 10;
-				spotLight.shadow.camera.far = 200;
-				spotLight.shadow.focus = 1;
-				scene.add( spotLight );
+    spotLight.castShadow = true;
+    spotLight.shadow.mapSize.width = 512;
+    spotLight.shadow.mapSize.height = 512;
+    spotLight.shadow.camera.near = 10;
+    spotLight.shadow.camera.far = 200;
+    spotLight.shadow.focus = 1;
+    scene.add( spotLight );
 
         // lightHelper = new THREE.SpotLightHelper( spotLight );
 				// scene.add( lightHelper );
@@ -114,91 +106,8 @@ function init() {
 				// scene.add( shadowCameraHelper2 );
 
 
-        function buildGui() {
-
-				gui = new GUI();
-
-				const params = {
-					'light color': spotLight.color.getHex(),
-					intensity: spotLight.intensity,
-					distance: spotLight.distance,
-					angle: spotLight.angle,
-					penumbra: spotLight.penumbra,
-					decay: spotLight.decay,
-					focus: spotLight.shadow.focus,
-          positionx: spotLight.position.x,
-          positionz: spotLight.position.z,
-				};
-
-				gui.addColor( params, 'light color' ).onChange( function ( val ) {
-
-					spotLight.color.setHex( val );
-					render();
-
-				} );
-        gui.add( params, 'positionx', -1000, 1000 ).onChange( function ( val ) {
-
-					spotLight.position.x = val;
-					render();
-
-				} );
-
-        gui.add( params, 'positionz', -1000, 1000 ).onChange( function ( val ) {
-
-					spotLight.position.z = val;
-					render();
-
-				} );
 
 
-				gui.add( params, 'intensity', 0, 2 ).onChange( function ( val ) {
-
-					spotLight.intensity = val;
-					render();
-
-				} );
-
-
-				gui.add( params, 'distance', 50, 200 ).onChange( function ( val ) {
-
-					spotLight.distance = val;
-					render();
-
-				} );
-
-				gui.add( params, 'angle', 0, Math.PI / 3 ).onChange( function ( val ) {
-
-					spotLight.angle = val;
-					render();
-
-				} );
-
-				gui.add( params, 'penumbra', 0, 1 ).onChange( function ( val ) {
-
-					spotLight.penumbra = val;
-					render();
-
-				} );
-
-				gui.add( params, 'decay', 1, 2 ).onChange( function ( val ) {
-
-					spotLight.decay = val;
-					render();
-
-				} );
-
-				gui.add( params, 'focus', 0, 1 ).onChange( function ( val ) {
-
-					spotLight.shadow.focus = val;
-					render();
-
-				} );
-
-				gui.open();
-
-			}
-      render();
-      buildGui();
 
 /**********************
     CONTROLS
@@ -211,15 +120,17 @@ function init() {
     controls.enablePan = false; //Stop camera panning
     controls.update();
 
+
+
 /**********************
     BUILDING
 ************************/
 
 // Towers
 
-    // Tower behind left
-    creation.createCylinder([150, 65, 150], [100, 100, 300, 100], ['texture_wall2'], scene);
-    creation.createCone([150, 275, 150], [100, 120, 100], ['texture_cone'], scene);
+  // Tower behind left
+  creation.createCylinder([150, 65, 150], [100, 100, 300, 100], ['texture_wall2'], scene);
+  creation.createCone([150, 275, 150], [100, 120, 100], ['texture_cone'], scene);
 
   // Tower behind right
   creation.createCylinder([-175, 30, 175], [70, 70, 230, 100], ['texture_wall2'], scene); // Base
@@ -230,13 +141,13 @@ function init() {
   creation.createCone([-190, 125, -190], [50, 65, 50], ['texture_cone'], scene);
   creation.createCylinder([-155, 55, -160], [30, 30, 7.5, 50], ['texture_wood'], scene); // Walk zone
 
-    // Tower front middle right
-    creation.createCylinder([-57, 0, -200], [25, 25, 170, 100], ['texture_wall2'], scene);
-    creation.createCylinder([-57, 87.5, -200], [30, 30, 20, 100], ['texture_wall2'], scene);
+  // Tower front middle right
+  creation.createCylinder([-57, 0, -200], [25, 25, 170, 100], ['texture_wall2'], scene);
+  creation.createCylinder([-57, 87.5, -200], [30, 30, 20, 100], ['texture_wall2'], scene);
 
-    // Tower front middle left
-    creation.createCylinder([57, 0, -200], [25, 25, 170, 100], ['texture_wall2'], scene);
-    creation.createCylinder([57, 87.5, -200], [30, 30, 20, 100], ['texture_wall2'], scene);
+  // Tower front middle left
+  creation.createCylinder([57, 0, -200], [25, 25, 170, 100], ['texture_wall2'], scene);
+  creation.createCylinder([57, 87.5, -200], [30, 30, 20, 100], ['texture_wall2'], scene);
 
   // Tower front left
   creation.createCylinder([190, 5, -190], [50, 50, 175, 100], ['texture_wall2'], scene);
@@ -326,7 +237,7 @@ function init() {
 
     creation.createBox([450, -70, 0], [300, 40, 1200], ['texture_grass'], scene);
 
-  creation.createBox([0, -85, 0], [900, 10, 900], ['texture_grass'], scene);
+    creation.createBox([0, -85, 0], [900, 10, 900], ['texture_grass'], scene);
 
 // Stairs
     y = -50;
@@ -369,6 +280,39 @@ function init() {
         }
     );
 */
+var i = 0;
+let time = setInterval(function(){
+  if(i == 0){
+    if(spotLight.position.y != 1000){
+      spotLight.position.y += 2;
+      i = 0;
+      render()
+    }else{
+      if(spotLight.position.x != 1000){
+        spotLight.position.x += 1;
+        i = 0;
+        render()
+      }else {
+        i = 1;
+      }
+    }
+  }
+  if(i == 1){
+    if(spotLight.position.y != -1000){
+      spotLight.position.y -= 2;
+      i = 1;
+      render()
+    }else{
+      if(spotLight.position.x != -1000){
+        spotLight.position.x -= 1;
+        i = 1;
+        render()
+      }else {
+        i = 0;
+      }
+    }
+  }
+}, 10)
 } // Fin de la fonction init
 
 
@@ -409,12 +353,16 @@ function checkAnimation(name) {
     switch(name) {
         case "bridge":
             let counter;
+            elements[name].children[0].userData.draggable = false;
             if(elements[name].userData.status == "down") {
                 elements[name].userData.status = "up";
                 counter = 0;
                 let open = setInterval(function(){
                     elements['bridge'].rotation.x = counter * 0.01;
-                    if(elements['bridge'].rotation.x == 1.5) clearInterval(open);
+                    if(elements['bridge'].rotation.x == 1.5) {
+                      elements[name].children[0].userData.draggable = true;
+                      clearInterval(open);
+                    }
                     counter++;
                 }, 10)
             } else {
@@ -422,7 +370,10 @@ function checkAnimation(name) {
                 counter = 150;
                 let open = setInterval(function(){
                     elements['bridge'].rotation.x = counter * 0.01;
-                    if(elements['bridge'].rotation.x == 0) clearInterval(open);
+                    if(elements['bridge'].rotation.x == 0) {
+                      elements[name].children[0].userData.draggable = true;
+                      clearInterval(open);
+                    }
                     counter--;
                 }, 10)
             }
@@ -430,4 +381,108 @@ function checkAnimation(name) {
         default:
             console.log("Nothing found");
     }
+}
+
+
+function render() {
+
+  //lightHelper.update();
+
+  //shadowCameraHelper.update();
+
+  renderer.render( scene, camera );
+
+}
+
+
+function buildGui() {
+
+  gui = new GUI();
+
+  const params = {
+    'light color': spotLight.color.getHex(),
+    intensity: spotLight.intensity,
+    distance: spotLight.distance,
+    angle: spotLight.angle,
+    penumbra: spotLight.penumbra,
+    decay: spotLight.decay,
+    focus: spotLight.shadow.focus,
+    positionx: spotLight.position.x,
+    positiony: spotLight.position.y,
+    positionz: spotLight.position.z,
+  };
+
+  gui.addColor( params, 'light color' ).onChange( function ( val ) {
+
+    spotLight.color.setHex( val );
+    render();
+
+  } );
+  gui.add( params, 'positionx', -1000, 1000 ).onChange( function ( val ) {
+
+    spotLight.position.x = val;
+    render();
+
+  } );
+
+  gui.add( params, 'positionz', -1000, 1000 ).onChange( function ( val ) {
+
+    spotLight.position.z = val;
+    render();
+
+  } );
+
+  gui.add( params, 'positiony', -1000, 1000 ).onChange( function ( val ) {
+
+    spotLight.position.y = val;
+    render();
+
+  } );
+
+
+  gui.add( params, 'intensity', 0, 2 ).onChange( function ( val ) {
+
+    spotLight.intensity = val;
+    render();
+
+  } );
+
+
+  gui.add( params, 'distance', 50, 5000 ).onChange( function ( val ) {
+
+    spotLight.distance = val;
+    render();
+
+  } );
+
+  gui.add( params, 'angle', 0, Math.PI / 2 ).onChange( function ( val ) {
+
+    spotLight.angle = val;
+    render();
+
+  } );
+
+  gui.add( params, 'penumbra', 0, 1 ).onChange( function ( val ) {
+
+    spotLight.penumbra = val;
+    render();
+
+  } );
+
+  gui.add( params, 'decay', 1, 2 ).onChange( function ( val ) {
+
+    spotLight.decay = val;
+    render();
+
+  } );
+
+  gui.add( params, 'focus', 0, 1 ).onChange( function ( val ) {
+
+    spotLight.shadow.focus = val;
+    render();
+
+  } );
+
+  gui.open();
+
 }
