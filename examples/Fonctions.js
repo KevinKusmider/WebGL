@@ -1,4 +1,5 @@
 import * as THREE from '../build/three.module.js';
+import { GUI }  from './jsm/libs/dat.gui.module.js';
 
 /*
   Appelée lorsqu'on a besoin de récupérer une texture
@@ -38,7 +39,7 @@ function getMaterial(texture_name, type = 'basic') { //définit la valeur par d�
   switch (type) { // On utilise un switch au cas ou on veuille rajouter des matériaux plus tard
     case 'basic':
       if(texture !== null) {
-        return new THREE.MeshBasicMaterial( { map: texture } );   // cas où le MESH utilisé est le mesh basic (default)
+        return new THREE.MeshPhongMaterial( { map: texture, dithering: true } );   // cas où le MESH utilisé est le mesh basic (default)
       }
 
     default:
@@ -64,6 +65,8 @@ function createCone(position, geometry_info, material_info, scene = null ) { // 
     cone.position.x = position[0];
     cone.position.y = position[1];
     cone.position.z = position[2];
+    cone.castShadow = true;
+    cone.receiveShadow = true;
 
     if(scene == null) {
       return cone; // si scene = null alors l'objet créer est à ranger dans une var (utilisé pour faire des traitements sur l'objet)
@@ -96,6 +99,9 @@ function createBox(position, geometry_info, material_info, scene = null) {
     wall.position.x = position[0];
     wall.position.y = position[1];
     wall.position.z = position[2];
+    wall.castShadow = true;
+    wall.receiveShadow = true;
+
 
     if(scene == null) {
       return wall;
@@ -129,7 +135,10 @@ function createCylinder(position, geometry_info, material_info, scene = null) {
     cylinder.position.x = position[0];
     cylinder.position.y = position[1];
     cylinder.position.z = position[2];
-    scene.add(cylinder);
+
+    cylinder.castShadow = true;
+    cylinder.receiveShadow = true;
+
 
     if(scene == null) {
       return cylinder;
@@ -144,5 +153,20 @@ function createCylinder(position, geometry_info, material_info, scene = null) {
 
 }
 
+// function disco(para) {
+//
+//
+// let test =
+//   switch (para) {
+//
+//     case "disco": let spotLight = new THREE.SpotLight( 0xffffff, 1);
+//
+//       break;
+//     default:
+//
+//   }
+//
+//
+// }
 
-export { getTexture, getMaterial, createCone, createBox, createCylinder } // pour pouvoir utiliser les fonctions dans un autre fichier
+export { getTexture, getMaterial, createCone, createBox, createCylinder} // pour pouvoir utiliser les fonctions dans un autre fichier
