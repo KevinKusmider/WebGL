@@ -9,7 +9,7 @@ let camera, scene, renderer, controls;
 let x, y, z;
 let gui;
 let click, raycaster, pivot;
-let spotLight,lightHelper, shadowCameraHelper, spotLight2,lightHelper2, shadowCameraHelper2;
+let spotLight,lightHelper, shadowCameraHelper, spotLight2, spotLight3, spotLight4, lightHelper2, dot_light, shadowCameraHelper2;
 let elements = {};
 
 
@@ -37,7 +37,7 @@ function init() {
 
 // Initialisation scene
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xbfd1e5);
+
 
 // Initialisation renderer
     renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -78,11 +78,84 @@ function init() {
     spotLight.shadow.focus = 1;
     scene.add( spotLight );
 
-        // lightHelper = new THREE.SpotLightHelper( spotLight );
+    spotLight2 = new THREE.SpotLight( 0xf00020, 0.8);
+    spotLight2.position.set( 75,65,75);
+    spotLight2.angle = Math.PI ;
+    spotLight2.penumbra = 0.1;
+    spotLight2.decay = 2;
+    spotLight2.distance = 100;
+    spotLight2.target.position.set( 75, 100, 75);
+    spotLight2.target.updateMatrixWorld(); //to update target position
+
+    spotLight2.castShadow = true;
+    spotLight2.shadow.mapSize.width = 512;
+    spotLight2.shadow.mapSize.height = 512;
+    spotLight2.shadow.camera.near = 10;
+    spotLight2.shadow.camera.far = 200;
+    spotLight2.shadow.focus = 1;
+    scene.add( spotLight2 );
+
+    spotLight3 = new THREE.SpotLight( 0xf00020, 0.8);
+    spotLight3.position.set(110,40,-214);
+    spotLight3.angle = Math.PI ;
+    spotLight3.penumbra = 0.1;
+    spotLight3.decay = 2;
+    spotLight3.distance = 100;
+    spotLight3.target.position.set(110,70,-214);
+    spotLight3.target.updateMatrixWorld(); //to update target position
+
+    spotLight3.castShadow = true;
+    spotLight3.shadow.mapSize.width = 512;
+    spotLight3.shadow.mapSize.height = 512;
+    spotLight3.shadow.camera.near = 10;
+    spotLight3.shadow.camera.far = 200;
+    spotLight3.shadow.focus = 1;
+    scene.add( spotLight3 );
+
+    spotLight4 = new THREE.SpotLight( 0xf00020, 0.8);
+    spotLight4.position.set(-110,40,-214);
+    spotLight4.angle = Math.PI ;
+    spotLight4.penumbra = 0.1;
+    spotLight4.decay = 2;
+    spotLight4.distance = 100;
+    spotLight4.target.position.set(-110,70,-214);
+    spotLight4.target.updateMatrixWorld(); //to update target position
+
+    spotLight4.castShadow = true;
+    spotLight4.shadow.mapSize.width = 512;
+    spotLight4.shadow.mapSize.height = 512;
+    spotLight4.shadow.camera.near = 10;
+    spotLight4.shadow.camera.far = 200;
+    spotLight4.shadow.focus = 1;
+    scene.add( spotLight4 );
+
+    // dot = new THREE.SpotLight( 0xf00020, 1);
+    // dot.position.set(0,100,-500);
+    // dot.angle = 2 * Math.PI;
+    // dot.penumbra = 0.1;
+    // dot.decay = 2;
+    // dot.distance = 100;
+    //
+    // dot.castShadow = true;
+    // dot.shadow.mapSize.width = 512;
+    // dot.shadow.mapSize.height = 512;
+    // dot.shadow.camera.near = 10;
+    // dot.shadow.camera.far = 200;
+    // dot.shadow.focus = 1;
+    // scene.add( dot );
+
+        // lightHelper = new THREE.SpotLightHelper(dot );
 				// scene.add( lightHelper );
         //
-				// shadowCameraHelper = new THREE.CameraHelper( spotLight.shadow.camera );
+				// shadowCameraHelper = new THREE.CameraHelper( dot.shadow.camera );
 				// scene.add( shadowCameraHelper );
+
+        const sphere = new THREE.SphereGeometry(30,30,30);
+
+        dot_light = new THREE.PointLight( 0x270f36, 100, 150 );
+        dot_light.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial({color: 0x270f36})));
+         dot_light.position.set( -450, 72, -500 );
+        scene.add( dot_light );
 
         // spotLight2 = new THREE.SpotLight( 0xffffff, 1);
 				// spotLight2.position.set( 0,500,400 );
@@ -99,11 +172,11 @@ function init() {
 				// spotLight2.shadow.focus = 1;
 				// scene.add( spotLight2 );
         //
-        // lightHelper2 = new THREE.SpotLightHelper( spotLight2 );
-				// scene.add( lightHelper2 );
-        //
-				// shadowCameraHelper2 = new THREE.CameraHelper( spotLight2.shadow.camera );
-				// scene.add( shadowCameraHelper2 );
+        //  lightHelper2 = new THREE.SpotLightHelper( spotLight3 );
+				//  scene.add( lightHelper2 );
+        // // //
+				//  shadowCameraHelper2 = new THREE.CameraHelper( spotLight3.shadow.camera );
+				//  scene.add( shadowCameraHelper2 );
 
 
 
@@ -131,6 +204,7 @@ function init() {
   // Tower behind left
   creation.createCylinder([150, 65, 150], [100, 100, 300, 100], ['texture_wall2'], scene);
   creation.createCone([150, 275, 150], [100, 120, 100], ['texture_cone'], scene);
+  creation.createCylinder([78,50,78], [5,0,15,10], ['texture_dirt'], scene);
 
   // Tower behind right
   creation.createCylinder([-175, 30, 175], [70, 70, 230, 100], ['texture_wall2'], scene); // Base
@@ -176,6 +250,7 @@ function init() {
     // Wall front left
     creation.createBox([137.5, 0, -200], [150, 140, 20], ['texture_wall2'], scene);
     creation.createBox([105, 55, -175], [140, 7.5, 30], ['texture_wood'], scene); // Walk zone
+    creation.createCylinder([110,30,-212], [5,0,15,10], ['texture_dirt'], scene);
 
     // Loop remparts wall front left
     x = 125;
@@ -201,6 +276,7 @@ function init() {
     // Wall front right
     creation.createBox([-137.5, 0, -200], [150, 140, 20], ['texture_wall2'], scene);
     creation.createBox([-105, 55, -175], [140, 7.5, 30], ['texture_wood'], scene); // Walk zone
+    creation.createCylinder([-110,30,-212], [5,0,15,10], ['texture_dirt'], scene);
       // Loop remparts wall front right
       x = -125;
       for (var i = 0; i < 2; i++) {
@@ -282,36 +358,77 @@ function init() {
 */
 var i = 0;
 let time = setInterval(function(){
-  if(i == 0){
-    if(spotLight.position.y != 1000){
-      spotLight.position.y += 2;
-      i = 0;
-      render()
+  if(spotLight.position.x < 0 && spotLight.position.y >= 0){
+    spotLight2.intensity = 0;
+    spotLight3.intensity = 0;
+    spotLight4.intensity = 0;
+    if(spotLight.position.x < -500 && spotLight.position.y <= 500){
+      ambient.intensity = 0.075;
+      spotLight.position.x += 1;
+      spotLight.position.y = spotLight.position.x + 1000;
+      scene.background = new THREE.Color(0x6394cf);
+      console.log('couleur 2');
     }else{
-      if(spotLight.position.x != 1000){
-        spotLight.position.x += 1;
-        i = 0;
-        render()
-      }else {
-        i = 1;
-      }
+      ambient.intensity = 0.1;
+      spotLight.position.x += 1;
+      spotLight.position.y = spotLight.position.x + 1000;
+      scene.background = new THREE.Color(0x77b5fe);
+      console.log('couleur 1');
     }
   }
-  if(i == 1){
-    if(spotLight.position.y != -1000){
-      spotLight.position.y -= 2;
-      i = 1;
-      render()
+  if(spotLight.position.x >= 0 && spotLight.position.y > 0){
+    spotLight2.intensity = 0;
+    spotLight3.intensity = 0;
+    spotLight4.intensity = 0;
+    if(spotLight.position.x >= 500 && spotLight.position.y < 500){
+      ambient.intensity = 0.075;
+      spotLight.position.x += 1;
+      spotLight.position.y = 1000 - spotLight.position.x ;
+      scene.background = new THREE.Color(0x6394cf);
+      console.log('couleur 2');
     }else{
-      if(spotLight.position.x != -1000){
-        spotLight.position.x -= 1;
-        i = 1;
-        render()
-      }else {
-        i = 0;
-      }
+      ambient.intensity = 0.1;
+      spotLight.position.x += 1;
+      spotLight.position.y = 1000 - spotLight.position.x ;
+      scene.background = new THREE.Color(0x77b5fe);
+      console.log('couleur 1');
     }
   }
+  if(spotLight.position.x > 0 && spotLight.position.y <= 0){
+    ambient.intensity = 0.075;
+    spotLight2.intensity = 2;
+    spotLight3.intensity = 2;
+    spotLight4.intensity = 2;
+    if(spotLight.position.x > 500 && spotLight.position.y >= -500){
+      spotLight.position.x -= 1;
+      spotLight.position.y = spotLight.position.x - 1000;
+      scene.background = new THREE.Color(0x5075a2);
+      console.log('couleur 3');
+    }else{
+      spotLight.position.x -= 1;
+      spotLight.position.y = spotLight.position.x - 1000;
+      scene.background = new THREE.Color(0x3e5777);
+      console.log('couleur 4');
+    }
+  }
+  if(spotLight.position.x <= 0 && spotLight.position.y < 0){
+    ambient.intensity = 0.075;
+    spotLight2.intensity = 2;
+    spotLight3.intensity = 2;
+    spotLight4.intensity = 2;
+    if(spotLight.position.x <= -500 && spotLight.position.y > -500){
+      spotLight.position.x -= 1;
+      spotLight.position.y = -1000 - spotLight.position.x;
+      scene.background = new THREE.Color(0x5075a2);
+      console.log('couleur 3');
+    }else{
+      spotLight.position.x -= 1;
+      spotLight.position.y = -1000 - spotLight.position.x;
+      scene.background = new THREE.Color(0x3e5777);
+      console.log('couleur 4');
+    }
+  }
+  render()
 }, 10)
 } // Fin de la fonction init
 
@@ -410,6 +527,9 @@ function buildGui() {
     positionx: spotLight.position.x,
     positiony: spotLight.position.y,
     positionz: spotLight.position.z,
+    movelight: dot_light.position.x,
+    movelighty: dot_light.position.y,
+    movelightz: dot_light.position.z
   };
 
   gui.addColor( params, 'light color' ).onChange( function ( val ) {
@@ -418,6 +538,7 @@ function buildGui() {
     render();
 
   } );
+
   gui.add( params, 'positionx', -1000, 1000 ).onChange( function ( val ) {
 
     spotLight.position.x = val;
@@ -479,6 +600,26 @@ function buildGui() {
   gui.add( params, 'focus', 0, 1 ).onChange( function ( val ) {
 
     spotLight.shadow.focus = val;
+    render();
+
+  } );
+
+  gui.add( params, 'movelight', -500, 500 ).onChange( function ( val ) {
+
+    dot_light.position.x = val;
+    render();
+
+  } );
+
+  gui.add( params, 'movelightz', -500, 500 ).onChange( function ( val ) {
+
+    dot_light.position.z = val;
+    render();
+
+  } );
+  gui.add( params, 'movelighty', -500, 500 ).onChange( function ( val ) {
+
+    dot_light.position.y = val;
     render();
 
   } );
