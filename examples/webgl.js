@@ -1,8 +1,8 @@
 import * as THREE from '../build/three.module.js';
 import { OrbitControls } from './jsm/controls/OrbitControls.js';
 import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
-import * as creation from './Fonctions.js';
-import { GUI }  from './jsm/libs/dat.gui.module.js';
+import * as creation from './Fonctions.js';       // Appel de notre fichier fonctions.js
+import { GUI }  from './jsm/libs/dat.gui.module.js';        // Appel du fichier pour intégrer un GUI
 
 let camera, scene, renderer, controls;
 
@@ -16,13 +16,13 @@ let elements = {};
 // init();
 // animate();
 
-init();
+init();           // Fonction d'initialisation pour créer les objets
 
-animate();
+animate();        // Fonction qui permet de faire les animations
 
 
-buildGui();
-render();
+buildGui();       // Fonction pour construire un GUI
+render();         // Fonction pour actualiser si il y a eu un changement
 
 
 
@@ -39,7 +39,7 @@ function init() {
     scene = new THREE.Scene();
 
 
-// Initialisation renderer
+// Initialisation renderer (rendu final)
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -59,26 +59,26 @@ function init() {
     window.addEventListener('resize', onWindowResize); // When window's resized
 
 //lights
-    const ambient = new THREE.AmbientLight( 0xffffff, 0.1 );
+    const ambient = new THREE.AmbientLight( 0xffffff, 0.1 ); // création d'une lumière ambiante
     scene.add( ambient );
 
 
-    spotLight = new THREE.SpotLight( 0xffffff, 1);
-    spotLight.position.set( -1000,1000,0);
-    spotLight.angle = Math.PI / 4;
-    spotLight.penumbra = 0.1;
-    spotLight.decay = 2;
-    spotLight.distance = 1700;
+    spotLight = new THREE.SpotLight( 0xffffff, 1); // création d'un spotLight / source de lumière
+    spotLight.position.set( -1000,1000,0);        // Initialisation de la position du spotlight
+    spotLight.angle = Math.PI / 4;                // Angle de projection de la lumière
+    spotLight.penumbra = 0.1;                     // Netteté de la lumière / Précision
+    spotLight.decay = 2;                          // Quantité de lumière selon la distance de celle ci
+    spotLight.distance = 1700;                    // Distance du spotlight par rapport au centre
 
-    spotLight.castShadow = true;
-    spotLight.shadow.mapSize.width = 512;
-    spotLight.shadow.mapSize.height = 512;
-    spotLight.shadow.camera.near = 10;
-    spotLight.shadow.camera.far = 200;
-    spotLight.shadow.focus = 1;
-    scene.add( spotLight );
+    spotLight.castShadow = true;                  // Reflète la lumière pour créer des ombres
+    spotLight.shadow.mapSize.width =512;          //  Proportion de l'ombre (largeur)
+    spotLight.shadow.mapSize.height = 512;        // Proportion de l'ombre (hauteur)
+    spotLight.shadow.camera.near = 10;            // affichage de l'ombre selon la distance (proche)
+    spotLight.shadow.camera.far = 200;            // affichage de l'ombre selon la distance (loin)
+    spotLight.shadow.focus = 1;                   // Présence/Intensité de l'ombre
+    scene.add( spotLight );                       // Ajout de la lumière dans la scène
 
-    spotLight2 = new THREE.SpotLight( 0xf00020, 0.8);
+    spotLight2 = new THREE.SpotLight( 0xf00020, 0.8);     // Création d'un deuxième spotlight / Sur la tour au fond à gauche
     spotLight2.position.set( 75,65,75);
     spotLight2.angle = Math.PI ;
     spotLight2.penumbra = 0.1;
@@ -95,7 +95,7 @@ function init() {
     spotLight2.shadow.focus = 1;
     scene.add( spotLight2 );
 
-    spotLight3 = new THREE.SpotLight( 0xf00020, 0.8);
+    spotLight3 = new THREE.SpotLight( 0xf00020, 0.8);          // Création d'un troisième spotlight / Sur le mur devant gauche
     spotLight3.position.set(110,40,-214);
     spotLight3.angle = Math.PI ;
     spotLight3.penumbra = 0.1;
@@ -112,7 +112,7 @@ function init() {
     spotLight3.shadow.focus = 1;
     scene.add( spotLight3 );
 
-    spotLight4 = new THREE.SpotLight( 0xf00020, 0.8);
+    spotLight4 = new THREE.SpotLight( 0xf00020, 0.8);           // Création d'un quatrième spotlight / Sur le mur devant droit
     spotLight4.position.set(-110,40,-214);
     spotLight4.angle = Math.PI ;
     spotLight4.penumbra = 0.1;
@@ -129,56 +129,19 @@ function init() {
     spotLight4.shadow.focus = 1;
     scene.add( spotLight4 );
 
-    // dot = new THREE.SpotLight( 0xf00020, 1);
-    // dot.position.set(0,100,-500);
-    // dot.angle = 2 * Math.PI;
-    // dot.penumbra = 0.1;
-    // dot.decay = 2;
-    // dot.distance = 100;
+
+    // lightHelper = new THREE.SpotLightHelper(dot );     // Helper permet de debugger les problèmes sur les lumières
+		// scene.add( lightHelper );
     //
-    // dot.castShadow = true;
-    // dot.shadow.mapSize.width = 512;
-    // dot.shadow.mapSize.height = 512;
-    // dot.shadow.camera.near = 10;
-    // dot.shadow.camera.far = 200;
-    // dot.shadow.focus = 1;
-    // scene.add( dot );
+		// shadowCameraHelper = new THREE.CameraHelper( dot.shadow.camera );
+		// scene.add( shadowCameraHelper );
 
-        // lightHelper = new THREE.SpotLightHelper(dot );
-				// scene.add( lightHelper );
-        //
-				// shadowCameraHelper = new THREE.CameraHelper( dot.shadow.camera );
-				// scene.add( shadowCameraHelper );
+    const sphere = new THREE.SphereGeometry(30,30,30);// création d'une sphère
 
-        const sphere = new THREE.SphereGeometry(30,30,30);
-
-        dot_light = new THREE.PointLight( 0x270f36, 100, 150 );
-        dot_light.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial({color: 0x270f36})));
-         dot_light.position.set( -450, 72, -500 );
-        scene.add( dot_light );
-
-        // spotLight2 = new THREE.SpotLight( 0xffffff, 1);
-				// spotLight2.position.set( 0,500,400 );
-				// spotLight2.angle = Math.PI / 4;
-				// spotLight2.penumbra = 0.1;
-				// spotLight2.decay = 2;
-				// spotLight2.distance = 1700;
-        //
-				// spotLight2.castShadow = true;
-				// spotLight2.shadow.mapSize.width = 512;
-				// spotLight2.shadow.mapSize.height = 512;
-				// spotLight2.shadow.camera.near = 10;
-				// spotLight2.shadow.camera.far = 200;
-				// spotLight2.shadow.focus = 1;
-				// scene.add( spotLight2 );
-        //
-        //  lightHelper2 = new THREE.SpotLightHelper( spotLight3 );
-				//  scene.add( lightHelper2 );
-        // // //
-				//  shadowCameraHelper2 = new THREE.CameraHelper( spotLight3.shadow.camera );
-				//  scene.add( shadowCameraHelper2 );
-
-
+    dot_light = new THREE.PointLight( 0x270f36, 100, 150 ); // création d'un point de lumière
+    dot_light.add( new THREE.Mesh( sphere, new THREE.MeshPhongMaterial({color: 0x270f36}))); // on ajoute du maillage au point de lumière on met en paramètre du maillage la géométrie de la sphere et le matériel Phong
+    dot_light.position.set( -450, 72, -500 ); // position de la sphere
+    scene.add( dot_light ); // ajout de la sphere
 
 
 
@@ -204,7 +167,7 @@ function init() {
   // Tower behind left
   creation.createCylinder([150, 65, 150], [100, 100, 300, 100], ['texture_wall2'], scene);
   creation.createCone([150, 275, 150], [100, 120, 100], ['texture_cone'], scene);
-  creation.createCylinder([78,50,78], [5,0,15,10], ['texture_dirt'], scene);
+  creation.createCylinder([78,50,78], [5,0,15,10], ['texture_dirt'], scene);        // Torche
 
   // Tower behind right
   creation.createCylinder([-175, 30, 175], [70, 70, 230, 100], ['texture_wall2'], scene); // Base
@@ -250,7 +213,7 @@ function init() {
     // Wall front left
     creation.createBox([137.5, 0, -200], [150, 140, 20], ['texture_wall2'], scene);
     creation.createBox([105, 55, -175], [140, 7.5, 30], ['texture_wood'], scene); // Walk zone
-    creation.createCylinder([110,30,-212], [5,0,15,10], ['texture_dirt'], scene);
+    creation.createCylinder([110,30,-212], [5,0,15,10], ['texture_dirt'], scene); // Torche
 
     // Loop remparts wall front left
     x = 125;
@@ -276,7 +239,7 @@ function init() {
     // Wall front right
     creation.createBox([-137.5, 0, -200], [150, 140, 20], ['texture_wall2'], scene);
     creation.createBox([-105, 55, -175], [140, 7.5, 30], ['texture_wood'], scene); // Walk zone
-    creation.createCylinder([-110,30,-212], [5,0,15,10], ['texture_dirt'], scene);
+    creation.createCylinder([-110,30,-212], [5,0,15,10], ['texture_dirt'], scene);  // Torche
       // Loop remparts wall front right
       x = -125;
       for (var i = 0; i < 2; i++) {
@@ -357,79 +320,71 @@ function init() {
     );
 */
 var i = 0;
-let time = setInterval(function(){
-  if(spotLight.position.x < 0 && spotLight.position.y >= 0){
-    spotLight2.intensity = 0;
+let time = setInterval(function(){                                              // Boucle pour faire tourner le soleil
+  if(spotLight.position.x < 0 && spotLight.position.y >= 0){                    // Le soleil se leve
+    spotLight2.intensity = 0;                                                   // On éteint les lumières
     spotLight3.intensity = 0;
     spotLight4.intensity = 0;
-    if(spotLight.position.x < -500 && spotLight.position.y <= 500){
-      ambient.intensity = 0.075;
-      spotLight.position.x += 1;
-      spotLight.position.y = spotLight.position.x + 1000;
-      scene.background = new THREE.Color(0x6394cf);
+    if(spotLight.position.x < -500 && spotLight.position.y <= 500){             // Boucle pour avoir le quart bas (lever du soleil)
+      ambient.intensity = 0.075;                                                // La luminosité ambiante se met à 0.075
+      scene.background = new THREE.Color(0x6394cf);                             // On modifie la couleur du background
       console.log('couleur 2');
-    }else{
-      ambient.intensity = 0.1;
-      spotLight.position.x += 1;
-      spotLight.position.y = spotLight.position.x + 1000;
-      scene.background = new THREE.Color(0x77b5fe);
+    }else{                                                                      // Boucle pour avoir le jour après le lever
+      ambient.intensity = 0.1;                                                  // La luminosité ambiante se met à 0.075
+      scene.background = new THREE.Color(0x77b5fe);                             // On modifie la couleur du background
       console.log('couleur 1');
     }
+  spotLight.position.x += 1;                                                    // On modifie la position x du soleil
+  spotLight.position.y = spotLight.position.x + 1000;                           // On modifie la position y du soleil en fonction de x
   }
-  if(spotLight.position.x >= 0 && spotLight.position.y > 0){
-    spotLight2.intensity = 0;
+  if(spotLight.position.x >= 0 && spotLight.position.y > 0){                    // Le soleil se couche
+    spotLight2.intensity = 0;                                                   // On éteint les lumières
     spotLight3.intensity = 0;
     spotLight4.intensity = 0;
-    if(spotLight.position.x >= 500 && spotLight.position.y < 500){
-      ambient.intensity = 0.075;
-      spotLight.position.x += 1;
-      spotLight.position.y = 1000 - spotLight.position.x ;
-      scene.background = new THREE.Color(0x6394cf);
+    if(spotLight.position.x >= 500 && spotLight.position.y < 500){              // Boucle pour avoir le quart bas (coucher du soleil)
+      ambient.intensity = 0.075;                                                // La luminosité ambiante se met à 0.075
+      scene.background = new THREE.Color(0x6394cf);                             // On modifie la couleur du background
       console.log('couleur 2');
-    }else{
-      ambient.intensity = 0.1;
-      spotLight.position.x += 1;
-      spotLight.position.y = 1000 - spotLight.position.x ;
-      scene.background = new THREE.Color(0x77b5fe);
+    }else{                                                                      // Boucle pour avoir le jour avant le coucher
+      ambient.intensity = 0.1;                                                  // La luminosité ambiante se met à 0.075
+      scene.background = new THREE.Color(0x77b5fe);                             // On modifie la couleur du background
       console.log('couleur 1');
     }
+  spotLight.position.x += 1;                                                    // On modifie la position x du soleil
+  spotLight.position.y = 1000 - spotLight.position.x ;                          // On modifie la position y du soleil en fonction de x
   }
-  if(spotLight.position.x > 0 && spotLight.position.y <= 0){
-    ambient.intensity = 0.075;
-    spotLight2.intensity = 2;
+  if(spotLight.position.x > 0 && spotLight.position.y <= 0){                    // Le soleil vient de se coucher
+    ambient.intensity = 0.1;                                                    // La luminosité ambiante se met à 0.075
+    spotLight2.intensity = 2;                                                   // On allume les lumières
     spotLight3.intensity = 2;
     spotLight4.intensity = 2;
-    if(spotLight.position.x > 500 && spotLight.position.y >= -500){
-      spotLight.position.x -= 1;
-      spotLight.position.y = spotLight.position.x - 1000;
-      scene.background = new THREE.Color(0x5075a2);
+    if(spotLight.position.x > 500 && spotLight.position.y >= -500){             // Boucle pour avoir la nuit juste après le coucher
+      scene.background = new THREE.Color(0x5075a2);                             // On modifie la couleur du background
       console.log('couleur 3');
-    }else{
-      spotLight.position.x -= 1;
-      spotLight.position.y = spotLight.position.x - 1000;
-      scene.background = new THREE.Color(0x3e5777);
+    }else{                                                                      // Boucle pour avoir la nuit après le coucher
+      scene.background = new THREE.Color(0x3e5777);                             // On modifie la couleur du background
       console.log('couleur 4');
     }
+    spotLight.position.x -= 1;                                                  // On modifie la position x du soleil
+    spotLight.position.y = spotLight.position.x - 1000;                         // On modifie la position y du soleil en fonction de x
   }
-  if(spotLight.position.x <= 0 && spotLight.position.y < 0){
-    ambient.intensity = 0.075;
-    spotLight2.intensity = 2;
+  if(spotLight.position.x <= 0 && spotLight.position.y < 0){                    // Le soleil est déjà coucher jusqu'au lever
+    ambient.intensity = 0.075;                                                  // La luminosité ambiante se met à 0.075
+    spotLight2.intensity = 2;                                                   // On allume les lumières
     spotLight3.intensity = 2;
     spotLight4.intensity = 2;
-    if(spotLight.position.x <= -500 && spotLight.position.y > -500){
-      spotLight.position.x -= 1;
-      spotLight.position.y = -1000 - spotLight.position.x;
-      scene.background = new THREE.Color(0x5075a2);
+    if(spotLight.position.x <= -500 && spotLight.position.y > -500){            // Boucle pour avoir la nuit juste avant le lever
+      scene.background = new THREE.Color(0x5075a2);                             // On modifie la couleur du background
       console.log('couleur 3');
-    }else{
-      spotLight.position.x -= 1;
-      spotLight.position.y = -1000 - spotLight.position.x;
-      scene.background = new THREE.Color(0x3e5777);
+    }else{                                                                      // Boucle pour avoir la nuit avant le lever
+      scene.background = new THREE.Color(0x3e5777);                             // On modifie la couleur du background
       console.log('couleur 4');
     }
+    spotLight.position.x -= 1;                                                  // On modifie la position x du soleil
+    spotLight.position.y = -1000 - spotLight.position.x;                        // On modifie la position y du soleil en fonction de x
   }
-  render()
-}, 10)
+  render()                                                                      // On actualise les modifications faites
+}, 10)                                                                          // La boucle est un setInterval il faut donc donner un temps en millisecondes pour dire tout les combien de temps la boucle se repete
 } // Fin de la fonction init
 
 
@@ -471,23 +426,23 @@ function checkAnimation(name) {
         case "bridge":
             let counter;
             elements[name].children[0].userData.draggable = false;
-            if(elements[name].userData.status == "down") {
-                elements[name].userData.status = "up";
+            if(elements[name].userData.status == "down") { // Récupération élément['bridge'] = pivot et vérification de son status
+                elements[name].userData.status = "up";     // Changement du status to up
                 counter = 0;
-                let open = setInterval(function(){
-                    elements['bridge'].rotation.x = counter * 0.01;
+                let open = setInterval(function(){  // Ouverture du pont
+                    elements['bridge'].rotation.x = counter * 0.01; // Le pont s'incline de 0.01 en 0.01 jusqu'a arrivé à la limite
                     if(elements['bridge'].rotation.x == 1.5) {
                       elements[name].children[0].userData.draggable = true;
-                      clearInterval(open);
+                      clearInterval(open);// Declaration de la limite pour l'inclinaison du pont
                     }
                     counter++;
-                }, 10)
+                }, 10)   // 10 correspond à la répétition de la fonction toutes les 10 millisecondes
             } else {
                 elements[name].userData.status = "down";
                 counter = 150;
-                let open = setInterval(function(){
-                    elements['bridge'].rotation.x = counter * 0.01;
-                    if(elements['bridge'].rotation.x == 0) {
+                let open = setInterval(function(){  // Fermeture du pont
+                    elements['bridge'].rotation.x = counter * 0.01;// Le pont s'incline de 0.01 en 0.01 jusqu'a arrivé à la limite
+                    if(elements['bridge'].rotation.x == 0) { // Declaration de la limite pour l'inclinaison du pont
                       elements[name].children[0].userData.draggable = true;
                       clearInterval(open);
                     }
@@ -516,7 +471,7 @@ function buildGui() {
 
   gui = new GUI();
 
-  const params = {
+  const params = {                                  // Création d'un objet avec les différents paramètres du GUI
     'light color': spotLight.color.getHex(),
     intensity: spotLight.intensity,
     distance: spotLight.distance,
@@ -532,36 +487,36 @@ function buildGui() {
     movelightz: dot_light.position.z
   };
 
-  gui.addColor( params, 'light color' ).onChange( function ( val ) {
+  gui.addColor( params, 'light color' ).onChange( function ( val ) {      // Couleur de la lumière
 
     spotLight.color.setHex( val );
     render();
 
   } );
 
-  gui.add( params, 'positionx', -1000, 1000 ).onChange( function ( val ) {
+  gui.add( params, 'positionx', -1000, 1000 ).onChange( function ( val ) {    // Position x de la lumière
 
     spotLight.position.x = val;
     render();
 
   } );
 
-  gui.add( params, 'positionz', -1000, 1000 ).onChange( function ( val ) {
+  gui.add( params, 'positionz', -1000, 1000 ).onChange( function ( val ) {    // Position z de la lumière
 
     spotLight.position.z = val;
     render();
 
   } );
 
-  gui.add( params, 'positiony', -1000, 1000 ).onChange( function ( val ) {
+  gui.add( params, 'positiony', -1000, 1000 ).onChange( function ( val ) {    // Position y de la lumière
 
     spotLight.position.y = val;
     render();
 
   } );
 
-
-  gui.add( params, 'intensity', 0, 2 ).onChange( function ( val ) {
+/*
+  gui.add( params, 'intensity', 0, 2 ).onChange( function ( val ) {       // Intensitée de la lumière
 
     spotLight.intensity = val;
     render();
@@ -569,21 +524,21 @@ function buildGui() {
   } );
 
 
-  gui.add( params, 'distance', 50, 5000 ).onChange( function ( val ) {
+  gui.add( params, 'distance', 50, 5000 ).onChange( function ( val ) {    // Distance de la lumière
 
     spotLight.distance = val;
     render();
 
   } );
 
-  gui.add( params, 'angle', 0, Math.PI / 2 ).onChange( function ( val ) {
+  gui.add( params, 'angle', 0, Math.PI / 2 ).onChange( function ( val ) {       // Angle éclairé
 
     spotLight.angle = val;
     render();
 
   } );
 
-  gui.add( params, 'penumbra', 0, 1 ).onChange( function ( val ) {
+  gui.add( params, 'penumbra', 0, 1 ).onChange( function ( val ) {      // Penombre de la lumière
 
     spotLight.penumbra = val;
     render();
@@ -602,22 +557,22 @@ function buildGui() {
     spotLight.shadow.focus = val;
     render();
 
-  } );
+  } );*/
 
-  gui.add( params, 'movelight', -500, 500 ).onChange( function ( val ) {
+  gui.add( params, 'movelight', -500, 500 ).onChange( function ( val ) {      // Position x de la boule lumineuse
 
     dot_light.position.x = val;
     render();
 
   } );
 
-  gui.add( params, 'movelightz', -500, 500 ).onChange( function ( val ) {
+  gui.add( params, 'movelightz', -500, 500 ).onChange( function ( val ) {     // Position z de la boule lumineuse
 
     dot_light.position.z = val;
     render();
 
   } );
-  gui.add( params, 'movelighty', -500, 500 ).onChange( function ( val ) {
+  gui.add( params, 'movelighty', -500, 500 ).onChange( function ( val ) {     // Position y de la boule lumineuse
 
     dot_light.position.y = val;
     render();
