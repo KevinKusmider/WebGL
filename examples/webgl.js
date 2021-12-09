@@ -270,7 +270,6 @@ function init() {
 ************************/
   var i = 0;
   let time = setInterval(function(){
-    // spotLight4 = elements['Torche3'].children[0];
     if(spotLight.position.x < 0 && spotLight.position.y >= 0){                  // Le soleil se leve
       spotLight2.intensity = 0;                                                   // On éteint les lumières
       spotLight3.intensity = 0;
@@ -311,9 +310,12 @@ function init() {
     }
     if(spotLight.position.x > 0 && spotLight.position.y <= 0){                    // Le soleil vient de se coucher
       ambient.intensity = 0.1;                                                    // La luminosité ambiante se met à 0.075
-      spotLight2.intensity = 2;                                                   // On allume les lumières
-      spotLight3.intensity = 2;
-      spotLight4.intensity = 2;
+      if (spotLight2.intensity == 0 && spotLight3.intensity == 0 && spotLight4.intensity == 0){   // On regarde si toutes les lumières sont à 0, on les allume et on met le son
+        creation.getMusic('torche');
+        spotLight2.intensity = 2;                                                   // On allume les lumières
+        spotLight3.intensity = 2;
+        spotLight4.intensity = 2;
+      }
       if(spotLight.position.x > 500 && spotLight.position.y >= -500){             // Boucle pour avoir la nuit juste après le coucher
         scene.background = new THREE.Color(0x5075a2);                             // On modifie la couleur du background
         console.log('couleur 3');
@@ -326,9 +328,12 @@ function init() {
     }
     if(spotLight.position.x <= 0 && spotLight.position.y < 0){                    // Le soleil est déjà coucher jusqu'au lever
       ambient.intensity = 0.075;                                                  // La luminosité ambiante se met à 0.075
-      spotLight2.intensity = 2;                                                   // On allume les lumières
-      spotLight3.intensity = 2;
-      spotLight4.intensity = 2;
+      if (spotLight2.intensity == 0 && spotLight3.intensity == 0 && spotLight4.intensity == 0){
+        creation.getMusic('torche');
+        spotLight2.intensity = 2;                                                   // On allume les lumières
+        spotLight3.intensity = 2;
+        spotLight4.intensity = 2;
+      }
       if(spotLight.position.x <= -500 && spotLight.position.y > -500){            // Boucle pour avoir la nuit juste avant le lever
         scene.background = new THREE.Color(0x5075a2);                             // On modifie la couleur du background
         console.log('couleur 3');
@@ -339,7 +344,7 @@ function init() {
       spotLight.position.x -= 1;                                                  // On modifie la position x du soleil
       spotLight.position.y = -1000 - spotLight.position.x;                        // On modifie la position y du soleil en fonction de x
     }
-    creation.render();                                                                      // On actualise les modifications faites
+    creation.render();                                                            // On actualise les modifications faites
   }, 10)                                                                          // La boucle est un setInterval il faut donc donner un temps en millisecondes pour dire tout les combien de temps la boucle se repete
 
   creation.buildGui([spotLight, dot_light]);       // Fonction pour construire un GUI
@@ -385,6 +390,7 @@ function onClick(event) {
 function checkAnimation(name) {
   switch(name) {
       case "bridge":
+      creation.getMusic('pont');
           let counter;
           elements[name].children[0].userData.draggable = false;
           if(elements[name].userData.status == "down") { // Récupération élément['bridge'] = pivot et vérification de son status
@@ -413,27 +419,28 @@ function checkAnimation(name) {
           break;
       case "Torche1":
           if (spotLight2.position.y == 65) {
-            spotLight2.position.y = -10000;
+            spotLight2.position.y = -1000;
           }else{
+            creation.getMusic('torche');
             spotLight2.position.y = 65;
           }
           creation.render();
           break;
       case "Torche2":
           if (spotLight3.position.y == 40) {
-            spotLight3.position.y = -10000;
+            spotLight3.position.y = -1000;
           }else{
+            creation.getMusic('torche');
             spotLight3.position.y = 40;
           }
           creation.render();
           break;
       case "Torche3":
           if (spotLight4.position.y == 40) {
-            spotLight4.position.y = -10000;
-            console.log('test ok');
+            spotLight4.position.y = -1000;
           }else{
-              spotLight4.position.y = 40;
-              console.log('test ok');
+            creation.getMusic('torche');
+            spotLight4.position.y = 40;
           }
           creation.render();
           break;

@@ -361,4 +361,28 @@ function buildGui(objects) {
 
 }
 
-export { init, getTexture, getMaterial, createCone, createBox, createCylinder, createSpotlight, buildGui, render} // pour pouvoir utiliser les fonctions dans un autre fichier
+function getMusic(name) {
+  const music = {    // on crée un tableau qui contient toutes les musiques que l'on utilise
+    'torche' : './sounds/torche.mp3',
+    'pont': './sounds/pont-levis.mp3',
+  }
+
+  if(music[name] != null) {
+    const listener = new THREE.AudioListener();                               //
+    const sound = new THREE.Audio( listener );                                //
+    const audioLoader = new THREE.AudioLoader();                              //
+    audioLoader.load( music[name] , function( buffer ) {                             //
+      sound.setBuffer( buffer );                                              //
+      sound.play();                                                           //
+    });
+  } else {
+    console.log("Le son n'a pas été trouvé");
+    return null;
+  }
+
+}
+
+
+
+
+export { init, getTexture, getMaterial, createCone, createBox, createCylinder, createSpotlight, getMusic, buildGui, render} // pour pouvoir utiliser les fonctions dans un autre fichier
