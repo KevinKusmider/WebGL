@@ -65,7 +65,8 @@ function getMaterial(texture_name, type = 'basic') { //définit la valeur par d�
     case 'basic':
       if(texture !== null) {
         return new THREE.MeshPhongMaterial( { map: texture, dithering: true } );   // cas où le MESH utilisé est le mesh basic (default)
-      }
+      } else { return null }
+      break;
 
     default:
       console.log('Le type de material spécifié est introuvable.');
@@ -181,6 +182,7 @@ function createCylinder(position, geometry_info, material_info, scene = null) {
 }
 
 
+
 /*
   Appelée pour créer une SpotLight
   @param { array } color, intensity
@@ -292,6 +294,50 @@ function buildGui(objects) {
     objects[0].position.y = val;
     render();
   } );
+
+/*
+  gui.add( params, 'intensity', 0, 2 ).onChange( function ( val ) {       // Intensitée de la lumière
+
+    spotLight.intensity = val;
+    render();
+
+  } );
+
+
+  gui.add( params, 'distance', 50, 5000 ).onChange( function ( val ) {    // Distance de la lumière
+
+    spotLight.distance = val;
+    render();
+
+  } );
+
+  gui.add( params, 'angle', 0, Math.PI / 2 ).onChange( function ( val ) {       // Angle éclairé
+
+    spotLight.angle = val;
+    render();
+
+  } );
+
+  gui.add( params, 'penumbra', 0, 1 ).onChange( function ( val ) {      // Penombre de la lumière
+
+    spotLight.penumbra = val;
+    render();
+
+  } );
+
+  gui.add( params, 'decay', 1, 2 ).onChange( function ( val ) {
+
+    spotLight.decay = val;
+    render();
+
+  } );
+
+  gui.add( params, 'focus', 0, 1 ).onChange( function ( val ) {
+
+    spotLight.shadow.focus = val;
+    render();
+
+  } );*/
 
   gui.add( params, 'movelight', -500, 500 ).onChange( function ( val ) {      // Position x de la boule lumineuse
     objects[1].position.x = val;
