@@ -2,7 +2,7 @@ import * as THREE from '../build/three.module.js';
 import { GUI }  from './jsm/libs/dat.gui.module.js';
 
 
-// Variables Globalss 
+// Variables Globalss
 
 let renderer, scene, camera;
 let gui;
@@ -13,7 +13,7 @@ let gui;
   @param { object } renderer du ficher webgl.ls
   @param { object } scene du ficher webgl.ls
   @param { object } camera du ficher webgl.ls
-  @return { void } 
+  @return { void }
 */
 
 function init(rendererWeb, sceneWeb, cameraWeb) {
@@ -32,10 +32,10 @@ function init(rendererWeb, sceneWeb, cameraWeb) {
 function getTexture(name) {
   const textures = {    // on crée un tableau qui contient toutes les textures que l'on utilise
     'texture_wall' : 'textures/wall.jpg',
-    'texture_wall2': 'textures/wall2.jfif',
+    'texture_wall2': 'textures/wall2.jpg',
     'texture_cone': 'textures/cone.jpg',
     'texture_water': 'textures/watertest.jpg',
-    'texture_wood': 'textures/wood.jpg',
+    'texture_wood': 'textures/wood2.jpg',
     'texture_grass': 'textures/grass.jpg',
     'texture_dirt': 'textures/dirt.jfif',
   }
@@ -61,6 +61,9 @@ function getTexture(name) {
 */
 function getMaterial(texture_name, type = 'basic') { //définit la valeur par défaut de type (ici basic)
   let texture = getTexture(texture_name);
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set( 2, 2 );
   switch (type) { // On utilise un switch au cas ou on veuille rajouter des matériaux plus tard
     case 'basic':
       if(texture !== null) {
@@ -223,7 +226,7 @@ function createSpotlight(color, position, angle, penumbra, decay, distance, targ
   } else {
     scene.add(spotLight)  // Ajout de la lumière dans la scène
     return true;
-  }                      
+  }
 }
 
 
