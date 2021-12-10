@@ -361,23 +361,28 @@ function buildGui(objects) {
 
 }
 
+/*
+  Appelée lorsqu'on a besoin de lancer un audio
+  @param { string } noom de l'audio
+*/
+
 function getMusic(name) {
-  const music = {    // on crée un tableau qui contient toutes les musiques que l'on utilise
+  const music = {                                                             // on crée un tableau qui contient toutes les musiques que l'on utilise
     'torche' : './sounds/torche.mp3',
     'pont': './sounds/pont-levis.mp3',
   }
 
-  if(music[name] != null) {
-    const listener = new THREE.AudioListener();                               //
-    const sound = new THREE.Audio( listener );                                //
-    const audioLoader = new THREE.AudioLoader();                              //
-    audioLoader.load( music[name] , function( buffer ) {                             //
-      sound.setBuffer( buffer );                                              //
-      sound.play();                                                           //
+  if(music[name] != null) {                                                   // protection pour si l'audio voulu n'a pas été trouvé
+    const listener = new THREE.AudioListener();                               // Création d'une variable pour que l'audio puisse se lancer
+    const sound = new THREE.Audio( listener );                                // Création d'une variable qui peut contenir un son que l'on met dans notre variable pour ecouter
+    const audioLoader = new THREE.AudioLoader();                              // Création d'une variable pour charger le son dans nos dossier
+    audioLoader.load( music[name] , function( buffer ) {                      // Fonction pour charger le son et le lancer
+      sound.setBuffer( buffer );                                              // Initialise le son dans la variable
+      sound.play();                                                           // Joue le son
     });
-  } else {
-    console.log("Le son n'a pas été trouvé");
-    return null;
+  } else {                                                                    // Si le son n'a pas été trouvé
+    console.log("Le son n'a pas été trouvé");                                 // On affiche dans la console
+    return null;                                                              // Et on renvoie null
   }
 
 }

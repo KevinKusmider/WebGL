@@ -389,8 +389,8 @@ function onClick(event) {
 
 function checkAnimation(name) {
   switch(name) {
-      case "bridge":
-      creation.getMusic('pont');
+      case "bridge":                      // animation du pont-levis
+      creation.getMusic('pont');          // On lance l'audio du pont-levis
           let counter;
           elements[name].children[0].userData.draggable = false;
           if(elements[name].userData.status == "down") { // Récupération élément['bridge'] = pivot et vérification de son status
@@ -417,16 +417,16 @@ function checkAnimation(name) {
               }, 10)
           }
           break;
-      case "Torche1":
-          if (spotLight2.position.y == 65) {
-            spotLight2.position.y = -1000;
+      case "Torche1":                                 // Animation de la torche sur la tour au fond à gauche
+          if (spotLight2.position.y == 65) {          // Si sa position y est à 65 c'est qu'elle est allumée
+            spotLight2.position.y = -1000;            // On l'a met à -1000 pour ne plus la voir et donc croire qu'elle est eteinte
           }else{
-            creation.getMusic('torche');
-            spotLight2.position.y = 65;
+            creation.getMusic('torche');              // Si elle était éteinte on lance l'audio de l'allumage de torche
+            spotLight2.position.y = 65;               // On l'a met à la bonne position
           }
-          creation.render();
+          creation.render();                          // On actualise le rendu
           break;
-      case "Torche2":
+      case "Torche2":                                 // Animation de la torche sur le mur avant gauche
           if (spotLight3.position.y == 40) {
             spotLight3.position.y = -1000;
           }else{
@@ -435,8 +435,8 @@ function checkAnimation(name) {
           }
           creation.render();
           break;
-      case "Torche3":
-          if (spotLight4.position.y == 40) {
+      case "Torche3":                                 // Animation de la torche sur le mur avant droit
+          if (spotLight4.position.y == 40) {          // Si sa position y est à 40 c'est qu'elle est allumée
             spotLight4.position.y = -1000;
           }else{
             creation.getMusic('torche');
