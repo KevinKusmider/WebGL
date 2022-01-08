@@ -283,17 +283,17 @@ function buildGui(objects) {
     render();
   } );
 
-  gui.add( params, 'positionx', -1000, 1000 ).onChange( function ( val ) {    // Position x de la lumière
+  gui.add( params, 'positionx', -2000, 2000 ).onChange( function ( val ) {    // Position x de la lumière
     objects[0].position.x = val;
     render();
   } );
 
-  gui.add( params, 'positionz', -1000, 1000 ).onChange( function ( val ) {    // Position z de la lumière
+  gui.add( params, 'positionz', -2000, 2000 ).onChange( function ( val ) {    // Position z de la lumière
     objects[0].position.z = val;
     render();
   } );
 
-  gui.add( params, 'positiony', -1000, 1000 ).onChange( function ( val ) {    // Position y de la lumière
+  gui.add( params, 'positiony', -2000, 2000 ).onChange( function ( val ) {    // Position y de la lumière
     objects[0].position.y = val;
     render();
   } );
