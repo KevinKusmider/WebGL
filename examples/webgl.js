@@ -24,9 +24,9 @@ function init() {
     INITIALISATIONS
 ************************/
 // Initialisation camera
-  camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 2000);
-  camera.position.z = -600;
-  camera.position.y = 100;
+  camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 4000);
+  camera.position.z = -1200;
+  camera.position.y = 200;
 
 // Initialisation scene
   scene = new THREE.Scene();
@@ -59,19 +59,19 @@ function init() {
   scene.add( ambient );
 
 // création d'un spotLight / source de lumière / soleil
-  spotLight = creation.createSpotlight([0xffffff, 1], [-1000,1000,0], Math.PI / 4, 0.1, 2, 1700, null, true, [512, 512], [10, 200, 1]);
+  spotLight = creation.createSpotlight([0xffffff, 1], [-2000,2000,0], Math.PI / 4, 0.1, 2, 2500, null, true, [512, 512], [10, 200, 1]);
   scene.add(spotLight);
 
 // Création d'un deuxième spotlight / Sur la tour au fond à gauche
-  spotLight2 = creation.createSpotlight([0xf00020, 0.8], [75,65,75], Math.PI, 0.1, 2, 100, [75, 100, 75], true, [512, 512], [10, 200, 1]);
+  spotLight2 = creation.createSpotlight([0xf00020, 0.8], [150,130,150], Math.PI, 0.1, 2, 100, [150, 200, 150], true, [512, 512], [10, 200, 1]);
   scene.add(spotLight2);
 
 // Création d'un troisième spotlight / Sur le mur devant gauche
-  spotLight3 = creation.createSpotlight([0xf00020, 0.8], [110,40,-214], Math.PI, 0.1, 2, 100, [110, 70, -214], true, [512, 512], [10, 200, 1]);
+  spotLight3 = creation.createSpotlight([0xf00020, 0.8], [220,80,-428], Math.PI, 0.1, 2, 100, [220, 140, -428], true, [512, 512], [10, 200, 1]);
   scene.add(spotLight3);
 
 // Création d'un quatrième spotlight / Sur le mur devant droit
-  spotLight4 = creation.createSpotlight([0xf00020, 0.8], [-110,40,-214], Math.PI, 0.1, 2, 100, [-110, 70, -214], true, [512, 512], [10, 200, 1]);
+  spotLight4 = creation.createSpotlight([0xf00020, 0.8], [-220,80,-428], Math.PI, 0.1, 2, 100, [-220, 140, -428], true, [512, 512], [10, 200, 1]);
   scene.add(spotLight4);
 
 // Helper permet de debugger les problèmes sur les lumières
@@ -85,7 +85,7 @@ function init() {
 
   dot_light = new THREE.PointLight( 0x270f36, 100, 150 ); // création d'un point de lumière
   dot_light.add( new THREE.Mesh( sphere, new THREE.MeshPhongMaterial({color: 0x270f36}))); // on ajoute du maillage au point de lumière on met en paramètre du maillage la géométrie de la sphere et le matériel Phong
-  dot_light.position.set( -450, 72, -500 ); // position de la sphere
+  dot_light.position.set( -900, 144, -1000 ); // position de la sphere
   scene.add( dot_light ); // ajout de la sphere
 
 
@@ -96,7 +96,7 @@ function init() {
   controls = new OrbitControls(camera, renderer.domElement); // define methode of controls
   controls.maxPolarAngle = Math.PI / 2;
   controls.minPolarAngle = Math.PI / 4;
-  controls.maxDistance = 1000; //limit camera zoom outward
+  controls.maxDistance = 2000; //limit camera zoom outward
   controls.minDistance = 100; //limit camera zoom inward
   controls.enablePan = false; //Stop camera panning
   controls.update();
@@ -108,73 +108,73 @@ function init() {
 ************************/
 // Towers
   // Tower behind left
-  creation.createCylinder([150, 65, 150], [100, 100, 300, 100], ['texture_wall2'], scene);
-  creation.createCone([150, 275, 150], [100, 120, 100], ['texture_cone'], scene);
-  let torch = creation.createCylinder([78,50,78], [5,0,15,10], ['texture_dirt']);        // Torche
+  creation.createCylinder([300, 130, 300], [200, 200, 600, 200], ['texture_wall2'], scene);
+  creation.createCone([300, 550, 300], [200, 240, 200], ['texture_cone'], scene);
+  let torch = creation.createCylinder([156,100,156], [10,0,30,20], ['texture_dirt']);        // Torche
   torch.userData.draggable = true;
   torch.userData.name = 'Torche1';
   scene.add(torch);
 
   // Tower behind right
-  creation.createCylinder([-175, 30, 175], [70, 70, 230, 100], ['texture_wall2'], scene); // Base
-  creation.createCylinder([-175, 150, 175], [85, 85, 40, 100], ['texture_wall2'], scene); // Top of tower
+  creation.createCylinder([-350, 60, 350], [140, 140, 460, 200], ['texture_wall2'], scene); // Base
+  creation.createCylinder([-350, 300, 350], [170, 170, 80, 200], ['texture_wall2'], scene); // Top of tower
 
   // Tower front right
-  creation.createCylinder([-190, 5, -190], [50, 50, 175, 100], ['texture_wall2'], scene);
-  creation.createCone([-190, 125, -190], [50, 65, 50], ['texture_cone'], scene);
-  creation.createCylinder([-155, 55, -160], [30, 30, 7.5, 50], ['texture_wood'], scene); // Walk zone
+  creation.createCylinder([-380, 10, -380], [100, 100, 350, 200], ['texture_wall2'], scene);
+  creation.createCone([-380, 250, -380], [100, 130, 100], ['texture_cone'], scene);
+  creation.createCylinder([-310, 110, -320], [60, 60, 15, 100], ['texture_wood'], scene); // Walk zone
 
   // Tower front middle right
-  creation.createCylinder([-57, 0, -200], [25, 25, 170, 100], ['texture_wall2'], scene);
-  creation.createCylinder([-57, 87.5, -200], [30, 30, 20, 100], ['texture_wall2'], scene);
+  creation.createCylinder([-114, 0, -400], [50, 50, 340, 200], ['texture_wall2'], scene);
+  creation.createCylinder([-114, 175, -400], [60, 60, 40, 200], ['texture_wall2'], scene);
 
   // Tower front middle left
-  creation.createCylinder([57, 0, -200], [25, 25, 170, 100], ['texture_wall2'], scene);
-  creation.createCylinder([57, 87.5, -200], [30, 30, 20, 100], ['texture_wall2'], scene);
+  creation.createCylinder([114, 0, -400], [50, 50, 340, 200], ['texture_wall2'], scene);
+  creation.createCylinder([114, 175, -400], [60, 60, 40, 200], ['texture_wall2'], scene);
 
   // Tower front left
-  creation.createCylinder([190, 5, -190], [50, 50, 175, 100], ['texture_wall2'], scene);
-  creation.createCone([190, 125, -190], [50, 65, 50], ['texture_cone'], scene);
-  creation.createCylinder([155, 55, -160], [30, 30, 7.5, 50], ['texture_wood'], scene); // Walk zone
+  creation.createCylinder([380, 10, -380], [100, 100, 350, 200], ['texture_wall2'], scene);
+  creation.createCone([380, 250, -380], [100, 130, 100], ['texture_cone'], scene);
+  creation.createCylinder([310, 110, -320], [60, 60, 15, 100], ['texture_wood'], scene); // Walk zone
 
 
 
 // Walls
   // Wall behind
-  creation.createBox([10, 20, 195], [270, 170, 50], ['texture_wall2'], scene);
+  creation.createBox([20, 40, 390], [540, 340, 100], ['texture_wall2'], scene);
 
   // Wall left
-  creation.createBox([195, 0, 0], [20, 140, 400], ['texture_wall2'], scene);
-  creation.createBox([170, 55, -70], [30, 7.5, 165], ['texture_wood'], scene); // Walk zone
+  creation.createBox([385, 0, 0], [40, 280, 800], ['texture_wall2'], scene);
+  creation.createBox([340, 110, -140], [60, 15, 330], ['texture_wood'], scene); // Walk zone
 
   // Loop remparts wall left
-  z = 32;
+  z = 64;
   for (var i = 0; i < 6; i++) {
-      creation.createBox([195, 75, z], [20, 10, 15], ['texture_wall2'], scene);
-      z = z - 30;
+      creation.createBox([385, 150, z], [40, 20, 30], ['texture_wall2'], scene);
+      z = z - 60;
   }
 
   // Wall front left
-  creation.createBox([137.5, 0, -200], [150, 140, 20], ['texture_wall2'], scene);
-  creation.createBox([105, 55, -175], [140, 7.5, 30], ['texture_wood'], scene); // Walk zone
-  torch = creation.createCylinder([110,30,-212], [5,0,15,10], ['texture_dirt']); // Torche
+  creation.createBox([275, 0, -400], [300, 280, 40], ['texture_wall2'], scene);
+  creation.createBox([210, 110, -350], [280, 15, 60], ['texture_wood'], scene); // Walk zone
+  torch = creation.createCylinder([220,60,-424], [10,0,30,20], ['texture_dirt']); // Torche
   torch.userData.draggable = true;
   torch.userData.name = 'Torche2';
   scene.add(torch);
 
   // Loop remparts wall front left
-  x = 125;
+  x = 250;
   for (var i = 0; i < 2; i++) {
-      creation.createBox([x, 75, -200], [15, 10, 20], ['texture_wall2'], scene);
-      x = x - 25;
+      creation.createBox([x, 150, -400], [30, 20, 40], ['texture_wall2'], scene);
+      x = x - 50;
   }
 
   // Drawbridge
-  creation.createBox([0, 68, -200], [80, 15, 20], ['texture_wall2'], scene); // wall above
-  creation.createBox([0, -55, -200], [80, 20, 10], ['texture_wall2'], scene); // wall uper
+  creation.createBox([0, 136, -400], [160, 30, 40], ['texture_wall2'], scene); // wall above
+  creation.createBox([0, -110, -400], [160, 40, 20], ['texture_wall2'], scene); // wall uper
   pivot = new THREE.Group(); // permet d'avoir un point d'encrage/origine au milieu de la base de la box
-  pivot.position.set( 32.5, -45, -200); // Dawnbridge's Origin
-  let bridge = creation.createBox([-32, 0, -52.5], [65, 5, 105], ['texture_wood'])  // Création du pont-levis
+  pivot.position.set( -65, -100, -395); // Dawnbridge's Origin
+  let bridge = creation.createBox([65, 5, -115], [130, 10, 210], ['texture_wood'])  // Création du pont-levis
   bridge.userData.draggable = true; // Ajout de l'attribut draggable
   bridge.userData.name = "bridge"; // On définit le nom du pont
   pivot.userData.status = "up"; // On définit la position du pont-levis au debut
@@ -184,52 +184,52 @@ function init() {
   elements['bridge'].rotation.x = 1.5; // Rotation initiale du pont-levis (0 si en bas, 1.5 si il est fermé)
 
   // Wall front right
-  creation.createBox([-137.5, 0, -200], [150, 140, 20], ['texture_wall2'], scene);
-  creation.createBox([-105, 55, -175], [140, 7.5, 30], ['texture_wood'], scene); // Walk zone
-  torch = creation.createCylinder([-110,30,-212], [5,0,15,10], ['texture_dirt']);  // Torche
+  creation.createBox([-275, 0, -400], [300, 280, 40], ['texture_wall2'], scene);
+  creation.createBox([-210, 110, -350], [280, 15, 60], ['texture_wood'], scene); // Walk zone
+  torch = creation.createCylinder([-220,60,-424], [10,0,30,20], ['texture_dirt']);  // Torche
   torch.userData.draggable = true;
   torch.userData.name = 'Torche3';
   scene.add(torch);
 
   // Loop remparts wall front right
-  x = -125;
+  x = -250;
   for (var i = 0; i < 2; i++) {
-      creation.createBox([x, 75, -200], [15, 10, 20], ['texture_wall2'], scene);
-      x = x + 25;
+      creation.createBox([x, 150, -400], [30, 20, 40], ['texture_wall2'], scene);
+      x = x + 50;
   }
 
   // Wall right
-  creation.createBox([-195, 0, 0], [20, 140, 400], ['texture_wall2'], scene);
-  creation.createBox([-170, 55, -10], [30, 7.5, 300], ['texture_wood'], scene); // Walk zone
+  creation.createBox([-390, 0, 0], [40, 280, 800], ['texture_wall2'], scene);
+  creation.createBox([-340, 110, -20], [60, 15, 600], ['texture_wood'], scene); // Walk zone
 
   // Loop remparts wall right
-  z = 90;
+  z = 180;
   for (var i = 0; i < 8; i++) {
-      creation.createBox([-195, 75, z], [20, 10, 15], ['texture_wall2'], scene);
-      z = z - 30;
+      creation.createBox([-390, 150, z], [40, 20, 30], ['texture_wall2'], scene);
+      z = z - 60;
   }
 
 // Floor
   // Floor inside castle
-  creation.createBox([0, -65, 0], [400, 40, 400], ['texture_dirt'], scene);
+  creation.createBox([0, -130, 0], [800, 80, 800], ['texture_dirt'], scene);
 
   // Water
-  creation.createBox([0, -70, 0], [600, 10, 610], ['texture_water'], scene);
+  creation.createBox([0, -140, 0], [1220, 20, 1220], ['texture_water'], scene);
 
   // Grass
-  creation.createBox([0, -70, -450], [1200, 40, 300], ['texture_grass'], scene);
-  creation.createBox([0, -70, 450], [1200, 40, 300], ['texture_grass'], scene);
-  creation.createBox([-450, -70, 0], [300, 40, 1200], ['texture_grass'], scene);
-  creation.createBox([450, -70, 0], [300, 40, 1200], ['texture_grass'], scene);
-  creation.createBox([0, -85, 0], [900, 10, 900], ['texture_grass'], scene);
+  creation.createBox([0, -140, -900], [2400, 80, 600], ['texture_grass'], scene);
+  creation.createBox([0, -140, 900], [2400, 80, 600], ['texture_grass'], scene);
+  creation.createBox([-900, -140, 0], [600, 80, 2400], ['texture_grass'], scene);
+  creation.createBox([900, -140, 0], [600, 80, 2400], ['texture_grass'], scene);
+  creation.createBox([0, -170, 0], [1800, 20, 1800], ['texture_grass'], scene);
 
 // Stairs
-  y = -50;
-  x = 76;
+  y = -100;
+  x = 147;
   for (var i = 0; i < 14; i++) {
-      creation.createBox([x, y, 44], [10, 7.5, 65], ['texture_wall2'], scene);
-      y = y + 7.5;
-      x = x + 8;
+      creation.createBox([x, y, 88], [20, 15, 130], ['texture_wall2'], scene);
+      y = y + 15;
+      x = x + 16;
   }
 
 
@@ -274,10 +274,10 @@ function init() {
       spotLight2.intensity = 0;                                                   // On éteint les lumières
       spotLight3.intensity = 0;
       spotLight4.intensity = 0;
-      spotLight2.position.y = 65;
-      spotLight3.position.y = 40;
-      spotLight4.position.y = 40;
-      if(spotLight.position.x < -500 && spotLight.position.y <= 500){             // Boucle pour avoir le quart bas (lever du soleil)
+      spotLight2.position.y = 130;
+      spotLight3.position.y = 80;
+      spotLight4.position.y = 80;
+      if(spotLight.position.x < -1000 && spotLight.position.y <= 1000){             // Boucle pour avoir le quart bas (lever du soleil)
         ambient.intensity = 0.075;                                                // La luminosité ambiante se met à 0.075
         scene.background = new THREE.Color(0x6394cf);                             // On modifie la couleur du background
         console.log('couleur 2');
@@ -286,17 +286,17 @@ function init() {
         scene.background = new THREE.Color(0x77b5fe);                             // On modifie la couleur du background
         console.log('couleur 1');
       }
-      spotLight.position.x += 1;                                                  // On modifie la position x du soleil
-      spotLight.position.y = spotLight.position.x + 1000;                         // On modifie la position y du soleil en fonction de x
+      spotLight.position.x += 2;                                                  // On modifie la position x du soleil
+      spotLight.position.y = spotLight.position.x + 2000;                         // On modifie la position y du soleil en fonction de x
     }
     if(spotLight.position.x >= 0 && spotLight.position.y > 0){                    // Le soleil se couche
       spotLight2.intensity = 0;                                                   // On éteint les lumières
       spotLight3.intensity = 0;
       spotLight4.intensity = 0;
-      spotLight2.position.y = 65;
-      spotLight3.position.y = 40;
-      spotLight4.position.y = 40;
-      if(spotLight.position.x >= 500 && spotLight.position.y < 500){              // Boucle pour avoir le quart bas (coucher du soleil)
+      spotLight2.position.y = 130;
+      spotLight3.position.y = 80;
+      spotLight4.position.y = 80;
+      if(spotLight.position.x >= 1000 && spotLight.position.y < 1000){              // Boucle pour avoir le quart bas (coucher du soleil)
         ambient.intensity = 0.075;                                                // La luminosité ambiante se met à 0.075
         scene.background = new THREE.Color(0x6394cf);                             // On modifie la couleur du background
         console.log('couleur 2');
@@ -305,8 +305,8 @@ function init() {
         scene.background = new THREE.Color(0x77b5fe);                             // On modifie la couleur du background
         console.log('couleur 1');
       }
-    spotLight.position.x += 1;                                                    // On modifie la position x du soleil
-    spotLight.position.y = 1000 - spotLight.position.x ;                          // On modifie la position y du soleil en fonction de x
+    spotLight.position.x += 2;                                                    // On modifie la position x du soleil
+    spotLight.position.y = 2000 - spotLight.position.x ;                          // On modifie la position y du soleil en fonction de x
     }
     if(spotLight.position.x > 0 && spotLight.position.y <= 0){                    // Le soleil vient de se coucher
       ambient.intensity = 0.1;                                                    // La luminosité ambiante se met à 0.075
@@ -316,15 +316,15 @@ function init() {
         spotLight3.intensity = 2;
         spotLight4.intensity = 2;
       }
-      if(spotLight.position.x > 500 && spotLight.position.y >= -500){             // Boucle pour avoir la nuit juste après le coucher
+      if(spotLight.position.x > 1000 && spotLight.position.y >= -1000){             // Boucle pour avoir la nuit juste après le coucher
         scene.background = new THREE.Color(0x5075a2);                             // On modifie la couleur du background
         console.log('couleur 3');
       }else{                                                                      // Boucle pour avoir la nuit après le coucher
         scene.background = new THREE.Color(0x3e5777);                             // On modifie la couleur du background
         console.log('couleur 4');
       }
-      spotLight.position.x -= 1;                                                  // On modifie la position x du soleil
-      spotLight.position.y = spotLight.position.x - 1000;                         // On modifie la position y du soleil en fonction de x
+      spotLight.position.x -= 2;                                                  // On modifie la position x du soleil
+      spotLight.position.y = spotLight.position.x - 2000;                         // On modifie la position y du soleil en fonction de x
     }
     if(spotLight.position.x <= 0 && spotLight.position.y < 0){                    // Le soleil est déjà coucher jusqu'au lever
       ambient.intensity = 0.075;                                                  // La luminosité ambiante se met à 0.075
@@ -334,15 +334,15 @@ function init() {
         spotLight3.intensity = 2;
         spotLight4.intensity = 2;
       }
-      if(spotLight.position.x <= -500 && spotLight.position.y > -500){            // Boucle pour avoir la nuit juste avant le lever
+      if(spotLight.position.x <= -1000 && spotLight.position.y > -1000){            // Boucle pour avoir la nuit juste avant le lever
         scene.background = new THREE.Color(0x5075a2);                             // On modifie la couleur du background
         console.log('couleur 3');
       }else{                                                                      // Boucle pour avoir la nuit avant le lever
         scene.background = new THREE.Color(0x3e5777);                             // On modifie la couleur du background
         console.log('couleur 4');
       }
-      spotLight.position.x -= 1;                                                  // On modifie la position x du soleil
-      spotLight.position.y = -1000 - spotLight.position.x;                        // On modifie la position y du soleil en fonction de x
+      spotLight.position.x -= 2;                                                  // On modifie la position x du soleil
+      spotLight.position.y = -2000 - spotLight.position.x;                        // On modifie la position y du soleil en fonction de x
     }
     creation.render();                                                            // On actualise les modifications faites
   }, 10)                                                                          // La boucle est un setInterval il faut donc donner un temps en millisecondes pour dire tout les combien de temps la boucle se repete
@@ -389,8 +389,8 @@ function onClick(event) {
 
 function checkAnimation(name) {
   switch(name) {
-      case "bridge":
-      creation.getMusic('pont');
+      case "bridge":                      // animation du pont-levis
+      creation.getMusic('pont');          // On lance l'audio du pont-levis
           let counter;
           elements[name].children[0].userData.draggable = false;
           if(elements[name].userData.status == "down") { // Récupération élément['bridge'] = pivot et vérification de son status
@@ -417,30 +417,30 @@ function checkAnimation(name) {
               }, 10)
           }
           break;
-      case "Torche1":
-          if (spotLight2.position.y == 65) {
-            spotLight2.position.y = -1000;
+      case "Torche1":                                 // Animation de la torche sur la tour au fond à gauche
+          if (spotLight2.position.y == 130) {          // Si sa position y est à 65 c'est qu'elle est allumée
+            spotLight2.position.y = -2000;            // On l'a met à -1000 pour ne plus la voir et donc croire qu'elle est eteinte
+          }else{
+            creation.getMusic('torche');              // Si elle était éteinte on lance l'audio de l'allumage de torche
+            spotLight2.position.y = 130;               // On l'a met à la bonne position
+          }
+          creation.render();                          // On actualise le rendu
+          break;
+      case "Torche2":                                 // Animation de la torche sur le mur avant gauche
+          if (spotLight3.position.y == 80) {
+            spotLight3.position.y = -2000;
           }else{
             creation.getMusic('torche');
-            spotLight2.position.y = 65;
+            spotLight3.position.y = 80;
           }
           creation.render();
           break;
-      case "Torche2":
-          if (spotLight3.position.y == 40) {
-            spotLight3.position.y = -1000;
+      case "Torche3":                                 // Animation de la torche sur le mur avant droit
+          if (spotLight4.position.y == 80) {          // Si sa position y est à 40 c'est qu'elle est allumée
+            spotLight4.position.y = -2000;
           }else{
             creation.getMusic('torche');
-            spotLight3.position.y = 40;
-          }
-          creation.render();
-          break;
-      case "Torche3":
-          if (spotLight4.position.y == 40) {
-            spotLight4.position.y = -1000;
-          }else{
-            creation.getMusic('torche');
-            spotLight4.position.y = 40;
+            spotLight4.position.y = 80;
           }
           creation.render();
           break;
