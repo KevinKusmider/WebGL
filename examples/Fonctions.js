@@ -3,26 +3,43 @@ import { GUI }  from './jsm/libs/dat.gui.module.js';
 
 
 // Variables Globalss
-
-let renderer, scene, camera;
 let gui;
+const manager = new THREE.LoadingManager();
+const textureLoader = new THREE.TextureLoader(manager);
 
+function getCameras() {
+  let cameras = {
+    main : {
+      type: "PerspectiveCamera",
+      position: [0, 100, -1200]
+    },
+    character : {
+      type: "PerspectiveCamera",
+      position: null
+    }
+  }
 
-/*
-  Appelée au début du fichier webgl afin de définir des variables globales dans le fichiers Fonctions.js
-  @param { object } renderer du ficher webgl.ls
-  @param { object } scene du ficher webgl.ls
-  @param { object } camera du ficher webgl.ls
-  @return { void }
-*/
+  for(let key in cameras) {
+    let info = cameras[key];
 
-function init(rendererWeb, sceneWeb, cameraWeb) {
-  renderer = rendererWeb;
-  scene = sceneWeb;
-  camera = cameraWeb;
+    let camera = {};
+    switch(info.type) {
+        case "PerspectiveCamera":
+          camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, info.far ? info.far : 4000);
+          if(info.position) {
+            camera.position.set(info.position[0], info.position[1], info.position[2])
+          }
+          break;
+        default:
+          console.log("Pas de type de caméra trouvé");
+          camera = null;
+    }
+
+    cameras[key] = camera; // Change les informations de la texture en l'objet texture créer par threeJS     
+  }
+
+  return cameras;
 }
-
-
 
 /*
   Appelée lorsqu'on a besoin de récupérer une texture
@@ -43,7 +60,7 @@ function getTexture(name) {
   let path = textures[name];  // On va chercher le chemin qui correspond au nom de la texture
 
   if(path !== undefined) {
-    return new THREE.TextureLoader().load( path); // create and return the texture
+    return textureLoader.load( path); // create and return the texture
   } else {
     console.log('Texture non existante');
     return null;
@@ -229,25 +246,6 @@ function createSpotlight(color, position, angle, penumbra, decay, distance, targ
   }
 }
 
-
-
-/*
-  Appelée pour rafraîchir le rendu de la scene
-  Utilise les variables globales définies à la ligne 8 et 10 avec la fonction init
-  Ces variables contiennent le renderer, la scene et la camera créés dans le fichier webgl
-  @return { void }
-*/
-function render() {
-
-  // lightHelper.update();
-
-  // shadowCameraHelper.update();
-
-  renderer.render( scene, camera );
-}
-
-
-
 /*
   Appelée pour construire une graphical user interface
   @param { array } objets pour lesquels il faut modifier les paramètres
@@ -280,92 +278,42 @@ function buildGui(objects) {
 
   gui.addColor( params, 'light color' ).onChange( function ( val ) {      // Couleur de la lumière
     objects[0].color.setHex( val );
-    render();
   } );
 
   gui.add( params, 'positionx', -2000, 2000 ).onChange( function ( val ) {    // Position x de la lumière
     objects[0].position.x = val;
-    render();
   } );
 
   gui.add( params, 'positionz', -2000, 2000 ).onChange( function ( val ) {    // Position z de la lumière
     objects[0].position.z = val;
-    render();
   } );
 
   gui.add( params, 'positiony', -2000, 2000 ).onChange( function ( val ) {    // Position y de la lumière
     objects[0].position.y = val;
-    render();
   } );
-
-/*
-  gui.add( params, 'intensity', 0, 2 ).onChange( function ( val ) {       // Intensitée de la lumière
-
-    spotLight.intensity = val;
-    render();
-
-  } );
-
-
-  gui.add( params, 'distance', 50, 5000 ).onChange( function ( val ) {    // Distance de la lumière
-
-    spotLight.distance = val;
-    render();
-
-  } );
-
-  gui.add( params, 'angle', 0, Math.PI / 2 ).onChange( function ( val ) {       // Angle éclairé
-
-    spotLight.angle = val;
-    render();
-
-  } );
-
-  gui.add( params, 'penumbra', 0, 1 ).onChange( function ( val ) {      // Penombre de la lumière
-
-    spotLight.penumbra = val;
-    render();
-
-  } );
-
-  gui.add( params, 'decay', 1, 2 ).onChange( function ( val ) {
-
-    spotLight.decay = val;
-    render();
-
-  } );
-
-  gui.add( params, 'focus', 0, 1 ).onChange( function ( val ) {
-
-    spotLight.shadow.focus = val;
-    render();
-
-  } );*/
 
   gui.add( params, 'movelight', -500, 500 ).onChange( function ( val ) {      // Position x de la boule lumineuse
     objects[1].position.x = val;
-    render();
   } );
 
   gui.add( params, 'movelightz', -500, 500 ).onChange( function ( val ) {     // Position z de la boule lumineuse
     objects[1].position.z = val;
-    render();
   } );
 
   gui.add( params, 'movelighty', -500, 500 ).onChange( function ( val ) {     // Position y de la boule lumineuse
     objects[1].position.y = val;
-    render();
   } );
 
   gui.open();
 
 }
 
+
+
 /*
   Appelée lorsqu'on a besoin de lancer un audio
   @param { string } noom de l'audio
 */
-
 function getMusic(name) {
   const music = {                                                             // on crée un tableau qui contient toutes les musiques que l'on utilise
     'torche' : './sounds/torche.mp3',
@@ -390,4 +338,4 @@ function getMusic(name) {
 
 
 
-export { init, getTexture, getMaterial, createCone, createBox, createCylinder, createSpotlight, getMusic, buildGui, render} // pour pouvoir utiliser les fonctions dans un autre fichier
+export { manager, getCameras, getTexture, getMaterial, createCone, createBox, createCylinder, createSpotlight, getMusic, buildGui } // pour pouvoir utiliser les fonctions dans un autre fichier
