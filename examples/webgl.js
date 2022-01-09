@@ -9,7 +9,7 @@ let camera, scene, renderer, controls;
 let x, y, z;
 let gui;
 let click, raycaster, pivot;
-let spotLight,lightHelper, shadowCameraHelper, spotLight2,lightHelper2, shadowCameraHelper2;
+let spotLight,lightHelper, shadowCameraHelper, spotLight2,lightHelper2, shadowCameraHelper2,clock,mixer;
 let elements = {};
 
 
@@ -30,6 +30,7 @@ function init() {
 /**********************
     INITIALISATIONS
 ************************/
+  clock = new THREE.Clock();
 // Initialisation camera
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 2000);
     camera.position.z = -600;
@@ -115,8 +116,8 @@ function init() {
     controls = new OrbitControls(camera, renderer.domElement); // define methode of controls
     controls.maxPolarAngle = Math.PI / 2;
     controls.minPolarAngle = Math.PI / 4;
-    controls.maxDistance = 1000; //limit camera zoom outward
-    controls.minDistance = 100; //limit camera zoom inward
+    controls.maxDistance = 10000; //limit camera zoom outward
+    controls.minDistance = 1000; //limit camera zoom inward
     controls.enablePan = false; //Stop camera panning
     controls.update();
 
@@ -253,33 +254,40 @@ function init() {
 /**********************
      ANIMALS
 ************************/
-/*
-    const light = new THREE.AmbientLight(0xffffff, 1);
-    light.position.set(375, 50,10);
-    scene.add(light);
+
+    // const light = new THREE.AmbientLight(0xffffff, 1);
+    // light.position.set(375, 50,10);
+    // scene.add(light);
 
 
     const loader = new GLTFLoader();
 
     loader.load(
         // Ressource URL
-        './3Delements/Horse/scene.gltf',
+        './3Delements/Pheonix/untitled.glb',
         // Called when the ressource is loaded
         function ( gltf ) {
-            const element = gltf.scene;
+            const model = gltf.scene;
+            const animations = gltf.animations;
 
             let elementMesh = gltf.scene.children[0];
-            elementMesh.scale.set(10, 10, 10);
+            elementMesh.scale.set(1, 1, 1);
+            model.position.set(0, 500,0);
+            model.rotation.z = Math.PI/16;
+            model.rotation.y = Math.PI/2;
+            model.traverse(function (object) { if(object.isMesh) object.castShadow = true;})
+            mixer = new THREE.AnimationMixer( model );
 
-            element.position.set(375,-10,3);
-            scene.add(element);
+            const action = mixer.clipAction( animations[ 0 ] ); // play the first animation
+            action.play();
+            scene.add(model);
         },
         // called while loading is progressing
         function ( xhr ) {
             console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
         }
     );
-*/
+
 var i = 0;
 let time = setInterval(function(){
   if(i == 0){
@@ -324,10 +332,12 @@ function onWindowResize() {
 
 }
 
+
 function animate() {
 
     requestAnimationFrame(animate);
-
+    const delta = clock.getDelta();
+    mixer.update(delta);
     renderer.render(scene, camera);
 }
 
