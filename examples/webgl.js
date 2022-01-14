@@ -30,6 +30,7 @@ let lightHelper, shadowCameraHelper;
 let elements = {};
 let characterControls, characterOrbitControls, keysPressed = {};
 let stats, mixer, clock = new THREE.Clock();
+let phoenixGroup = new THREE.Group();
 
 
 /****** SCREEN LOADER ******/
@@ -136,7 +137,7 @@ function init() {
   characterOrbitControls.minDistance = 150;
   characterOrbitControls.maxDistance = 150;
   characterOrbitControls.enablePan = false;
-  characterOrbitControls.maxPolarAngle = Math.PI / 2 - 0.05;
+  characterOrbitControls.maxPolarAngle = Math.PI - pi/4;
   characterOrbitControls.update(); 
 
 
@@ -144,6 +145,7 @@ function init() {
   buildCastle();
   solarSystem();
   loadCharacter();
+  scene.add(phoenixGroup);
   loadPhoenix();
 }
 
@@ -168,6 +170,9 @@ function animate() {
   if(characterControls && FPV_MODE) {
       characterControls.update(mixerUpdateDelta, keysPressed);
   }
+
+
+  phoenixGroup.rotation.y += mixerUpdateDelta/2;
 
   stats.update();
   mixer.update(mixerUpdateDelta);
@@ -506,10 +511,10 @@ function loadCharacter() {
         model.children[0].scale.set(0.6, 0.6, 0.6);
 
         const gltfAnimations = gltf.animations;
-        const mixer = new THREE.AnimationMixer(model);
-        const animationsMap = new Map();
+        const mixer = new THREE.AnimationMixer(model); // Définition du mixer object qui permet de jouer les animations
+        const animationsMap = new Map(); // Création d'un dictionnaire qui contiendra les animations du personnage
         gltfAnimations.filter(a => a.name != 'TPose').forEach(a => {
-            animationsMap.set(a.name, mixer.clipAction(a));
+            animationsMap.set(a.name, mixer.clipAction(a)); // ajouter les animations instance de AnimationAction au dictionnaires
         });
 
         characterControls = new CharacterControls(model, mixer, animationsMap, characterOrbitControls, cameras["character"], "Idle");
@@ -529,7 +534,7 @@ function loadPhoenix() {
       let elementMesh = gltf.scene.children[0];
       elementMesh.scale.set(0.6, 0.6, 0.6);
 
-      model.position.set(0, 500,0);
+      model.position.set(1000, 500,0);
       model.rotation.z = Math.PI/16;
       model.rotation.y = Math.PI/2;
 
@@ -538,8 +543,9 @@ function loadPhoenix() {
       mixer = new THREE.AnimationMixer( model );
 
       const action = mixer.clipAction( animations[ 0 ] ); // play the first animation
+      action.weight = 1;
       action.play();
-      scene.add(model);
+      phoenixGroup.add(model);
     }
   );
 }
