@@ -1,13 +1,10 @@
 import * as THREE from '../build/three.module.js'
 
-export class CharacterControls {
-
-    animationsMap = new Map(); // Walk, Run, Idle
-    
+export class CharacterControls {    
     // temporary data
     walkDirection = new THREE.Vector3();
     rotateAngle = new THREE.Vector3(0, 1, 0);
-    rotateQuarternion = new THREE.Quaternion();
+    rotateQuaternion = new THREE.Quaternion();
     cameraTarget = new THREE.Vector3();
     
     // constants
@@ -21,7 +18,7 @@ export class CharacterControls {
         this.animationsMap = animationsMap;
         this.currentAction = currentAction;
         this.animationsMap.forEach((value, key) => {
-            if (key == currentAction) {
+            if (key == currentAction) { // Recherche l'animation dans le dictionnaire et la joue.
                 value.play();
             }
         })
@@ -46,13 +43,13 @@ export class CharacterControls {
             const toPlay = this.animationsMap.get(play);
             const current = this.animationsMap.get(this.currentAction);
 
-            current.fadeOut(this.fadeDuration);
-            toPlay.reset().fadeIn(this.fadeDuration).play();
+            current.fadeOut(this.fadeDuration); // Diminue le degré d'influence (weight) de l'animation progressivement
+            toPlay.reset().fadeIn(this.fadeDuration).play(); // Reinitialise l'animation puis augmente le weight progressivement
 
             this.currentAction = play;
         }
 
-        this.mixer.update(delta);
+        this.mixer.update(delta); // Met à jour l'animation avec la nouvelle valeur delta
 
         if (this.currentAction == 'Run' || this.currentAction == 'Walk') {
             // calculate towards camera direction
@@ -63,21 +60,21 @@ export class CharacterControls {
             let directionOffset = this.directionOffset(keysPressed);
 
             // rotate model
-            this.rotateQuarternion.setFromAxisAngle(this.rotateAngle, angleYCameraDirection + directionOffset);
-            this.model.quaternion.rotateTowards(this.rotateQuarternion, 0.2);
+            this.rotateQuaternion.setFromAxisAngle(this.rotateAngle, angleYCameraDirection + directionOffset);
+            this.model.quaternion.rotateTowards(this.rotateQuaternion, 0.2);
 
             // calculate direction
             this.camera.getWorldDirection(this.walkDirection);
             this.walkDirection.y = 0;
             this.walkDirection.normalize();
-            this.walkDirection.applyAxisAngle(this.rotateAngle, directionOffset);
+            this.walkDirection.applyAxisAngle(this.rotateAngle, directionOffset); // Appliquer une rotation
 
             // run/walk velocity
             const velocity = this.currentAction == 'Run' ? this.runVelocity : this.walkVelocity;
 
             // move model & camera
-            const moveX = this.walkDirection.x * velocity * delta;
-            const moveZ = this.walkDirection.z * velocity * delta;
+            const moveX = this.walkDirection.x * velocity * 0.007;
+            const moveZ = this.walkDirection.z * velocity * 0.007;
             this.model.position.x += moveX;
             this.model.position.z += moveZ;
             this.updateCameraTarget(moveX, moveZ);
@@ -93,7 +90,7 @@ export class CharacterControls {
         this.cameraTarget.x = this.model.position.x;
         this.cameraTarget.y = this.model.position.y + 80;
         this.cameraTarget.z = this.model.position.z;
-        this.orbitControl.target = this.cameraTarget;
+        this.orbitControl.target = this.cameraTarget; // On définit le point de centrage de l'obitcontrol la ou se situe le model 3D
     }
 
     directionOffset(keysPressed) {
