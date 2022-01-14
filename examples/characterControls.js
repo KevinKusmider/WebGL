@@ -94,24 +94,24 @@ export class CharacterControls {
     }
 
     directionOffset(keysPressed) {
-        let directionOffset = 0; // w
+        let directionOffset = 0; // z
 
         if (keysPressed["z"]) {
             if (keysPressed["q"]) {
-                directionOffset = Math.PI / 4; // w+a
+                directionOffset = Math.PI / 4; // z+q
             } else if (keysPressed["d"]) {
-                directionOffset = - Math.PI / 4; // w+d
+                directionOffset = - Math.PI / 4; // z+d
             }
         } else if (keysPressed["s"]) {
             if (keysPressed["q"]) {
-                directionOffset = Math.PI / 4 + Math.PI / 2; // s+a
+                directionOffset = Math.PI / 4 + Math.PI / 2; // s+q
             } else if (keysPressed["d"]) {
                 directionOffset = -Math.PI / 4 - Math.PI / 2; // s+d
             } else {
                 directionOffset = Math.PI; // s
             }
         } else if (keysPressed["q"]) {
-            directionOffset = Math.PI / 2; // a
+            directionOffset = Math.PI / 2; // q
         } else if (keysPressed["d"]) {
             directionOffset = - Math.PI / 2; // d
         }

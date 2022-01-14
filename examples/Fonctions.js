@@ -280,6 +280,11 @@ function buildGui(objects) {
     objects[0].color.setHex( val );
   } );
 
+  gui.add( params, 'intensity', 0, 100 ).onChange( function ( val ) {       // Intensitée de la lumière
+
+    objects[0].intensity = val;
+  } );
+
   gui.add( params, 'positionx', -2000, 2000 ).onChange( function ( val ) {    // Position x de la lumière
     objects[0].position.x = val;
   } );
