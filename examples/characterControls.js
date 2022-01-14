@@ -73,8 +73,8 @@ export class CharacterControls {
             const velocity = this.currentAction == 'Run' ? this.runVelocity : this.walkVelocity;
 
             // move model & camera
-            const moveX = this.walkDirection.x * velocity * delta;
-            const moveZ = this.walkDirection.z * velocity * delta;
+            const moveX = this.walkDirection.x * velocity * 0.007;
+            const moveZ = this.walkDirection.z * velocity * 0.007;
             this.model.position.x += moveX;
             this.model.position.z += moveZ;
             this.updateCameraTarget(moveX, moveZ);
