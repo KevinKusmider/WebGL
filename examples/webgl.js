@@ -58,21 +58,21 @@ if (SCREEN_LOADER) {
   manager.onStart = function ( url, itemsLoaded, itemsTotal ) {
       console.log( 'Started loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
   };
-  
+
   manager.onLoad = function ( ) {
       RESOURCES_LOADED = true;
       loaderPercentage.classList = "";
       loaderPercentage.classList.add("hide");
       // console.log( 'Loading complete!');
   };
-  
+
   manager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
       let percentage = itemsLoaded/itemsTotal;
       loaderPercentage.textContent = percentage.toFixed(2)*100 + "%";
       loadingBar.geometry = new THREE.RingGeometry( 9, 10, 50, 30, pi*0.5, twoPi * percentage);
       // console.log( 'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
   };
-  
+
   manager.onError = function ( url ) {
       console.log( 'There was an error loading ' + url );
   };
@@ -138,7 +138,7 @@ function init() {
   characterOrbitControls.maxDistance = 150;
   characterOrbitControls.enablePan = false;
   characterOrbitControls.maxPolarAngle = Math.PI - pi/4;
-  characterOrbitControls.update(); 
+  characterOrbitControls.update();
 
 
   lights();
@@ -147,6 +147,7 @@ function init() {
   loadCharacter();
   scene.add(phoenixGroup);
   loadPhoenix();
+  loadTree();
 }
 
 function onWindowResize() {
@@ -534,7 +535,7 @@ function loadPhoenix() {
       let elementMesh = gltf.scene.children[0];
       elementMesh.scale.set(0.6, 0.6, 0.6);
 
-      model.position.set(1000, 500,0);
+      model.position.set(1000, 700,0);
       model.rotation.z = Math.PI/16;
       model.rotation.y = Math.PI/2;
 
@@ -548,4 +549,32 @@ function loadPhoenix() {
       phoenixGroup.add(model);
     }
   );
+}
+
+function loadTree() {
+  let positions = [[1000, -100 ,1000], [-900, -100 ,-800] , [-500, -100 ,900] , [1000, -100 ,-1000], [-900, -100 ,-100]]
+
+  for (var i = 0; i < positions.length; i++) {
+    let position = positions[i];
+    loader.load(
+      // Ressource URL
+      './3Delements/Tree/tree.glb',
+      // Called when the ressource is loaded
+      function ( gltf ) {
+        const model = gltf.scene;
+
+
+        let elementMesh = gltf.scene.children[0];
+        elementMesh.scale.set(80, 80, 80);
+        console.log(position);
+        model.position.set(position[0], position[1], position[2]);
+        model.traverse(function (object) { if(object.isMesh) object.castShadow = true;})
+
+        scene.add(model);
+
+
+
+    }
+    );
+  }
 }
