@@ -127,7 +127,7 @@ function init() {
   controls = new OrbitControls(camera, renderer.domElement); // define methode of controls
   controls.maxPolarAngle = Math.PI / 2;
   controls.minPolarAngle = Math.PI / 4;
-  controls.maxDistance = 2000; //limit camera zoom outward
+  // controls.maxDistance = 2000; //limit camera zoom outward
   controls.minDistance = 100; //limit camera zoom inward
   controls.enablePan = false; //Stop camera panning
   controls.update();
@@ -140,13 +140,38 @@ function init() {
   characterOrbitControls.maxPolarAngle = Math.PI - pi/4;
   characterOrbitControls.update(); 
 
+  /****** SKYBOX ******/
+  console.log("hello");
+  let sb_materials = [creation.getMaterial("sb_right", "skybox"),
+                      creation.getMaterial("sb_left", "skybox"),
+                      creation.getMaterial("sb_top", "skybox"),
+                      creation.getMaterial("sb_bottom", "skybox"),
+                      creation.getMaterial("sb_back", "skybox"),
+                      creation.getMaterial("sb_front", "skybox")];
+  let skybox = new THREE.Mesh(new THREE.BoxGeometry(5000, 5000, 5000), sb_materials);
+  // scene.add(skybox);
 
+  /****** FUNCTIONS CALLS ******/
   lights();
   buildCastle();
   solarSystem();
   loadCharacter();
   scene.add(phoenixGroup);
   loadPhoenix();
+
+  loader.load(
+    // Ressource URL
+    './3Delements/Mountain/mountain.glb',
+    // Called when the ressource is loaded
+    function ( gltf ) {
+      const model = gltf.scene;
+      model.position.set(-6000,-4200,-3000);
+      let elementMesh = gltf.scene.children[0];
+      elementMesh.scale.set(10000, 10000, 10000);
+
+      scene.add(model);
+    }
+  );
 }
 
 function onWindowResize() {
@@ -190,6 +215,7 @@ function onClick(event) {
 
   const found = raycaster.intersectObjects( scene.children, true); // détecte les objets en intérsection avec le rayon cf l.236
 
+  console.log(found[0])
   if(found.length > 0 && found[0].object.userData.draggable == true) {
       checkAnimation(found[0].object.userData.name);
   }

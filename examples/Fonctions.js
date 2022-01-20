@@ -25,7 +25,7 @@ function getCameras() {
     let camera = {};
     switch(info.type) {
         case "PerspectiveCamera":
-          camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, info.far ? info.far : 4000);
+          camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, info.far ? info.far : 15000);
           if(info.position) {
             camera.position.set(info.position[0], info.position[1], info.position[2])
           }
@@ -55,6 +55,12 @@ function getTexture(name) {
     'texture_wood': 'textures/wood2.jpg',
     'texture_grass': 'textures/grass.jpg',
     'texture_dirt': 'textures/dirt.jfif',
+    'sb_right' : 'textures/cube/Montagne/posx.png',
+    'sb_left' : 'textures/cube/Montagne/negx.png',
+    'sb_top' : 'textures/cube/Montagne/posy.png',
+    'sb_bottom' : 'textures/cube/Montagne/negy.png',
+    'sb_back' : 'textures/cube/Montagne/negz.png',
+    'sb_front' : 'textures/cube/Montagne/posz.png',
   }
 
   let path = textures[name];  // On va chercher le chemin qui correspond au nom de la texture
@@ -86,7 +92,12 @@ function getMaterial(texture_name, type = 'basic') { //définit la valeur par d�
       if(texture !== null) {
         return new THREE.MeshPhongMaterial( { map: texture, dithering: true } );   // cas où le MESH utilisé est le mesh basic (default)
       } else { return null }
-      break;
+      
+    case 'skybox':
+      texture.repeat.set( 1, 1 );
+      if(texture !== null) {
+        return new THREE.MeshBasicMaterial( { map: texture, side: THREE.DoubleSide, transparent: true } );   // cas où le MESH utilisé est le mesh basic (default)
+      } else { return null }
 
     default:
       console.log('Le type de material spécifié est introuvable.');
