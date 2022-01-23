@@ -135,21 +135,10 @@ function init() {
   // Character
   characterOrbitControls = new OrbitControls(cameras["character"], renderer.domElement);
   characterOrbitControls.minDistance = 150;
-  characterOrbitControls.maxDistance = 150;
+  characterOrbitControls.maxDistance = 200;
   characterOrbitControls.enablePan = false;
   characterOrbitControls.maxPolarAngle = Math.PI - pi/4;
   characterOrbitControls.update();
-
-  /****** SKYBOX ******/
-  console.log("hello");
-  let sb_materials = [creation.getMaterial("sb_right", "skybox"),
-                      creation.getMaterial("sb_left", "skybox"),
-                      creation.getMaterial("sb_top", "skybox"),
-                      creation.getMaterial("sb_bottom", "skybox"),
-                      creation.getMaterial("sb_back", "skybox"),
-                      creation.getMaterial("sb_front", "skybox")];
-  let skybox = new THREE.Mesh(new THREE.BoxGeometry(5000, 5000, 5000), sb_materials);
-  // scene.add(skybox);
 
   /****** FUNCTIONS CALLS ******/
   lights();
@@ -212,12 +201,10 @@ function onClick(event) {
 
   click.x = (event.clientX / window.innerWidth) * 2 - 1;
   click.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
   raycaster.setFromCamera( click, FPV_MODE ? cameras["character"] : camera); // mets à jours le rayon selon son origine et une direction
 
   const found = raycaster.intersectObjects( scene.children, true); // détecte les objets en intérsection avec le rayon cf l.236
 
-  console.log(found[0])
   if(found.length > 0 && found[0].object.userData.draggable == true) {
       checkAnimation(found[0].object.userData.name);
   }
@@ -260,7 +247,6 @@ function checkAnimation(name) {
             creation.getMusic('torche');              // Si elle était éteinte on lance l'audio de l'allumage de torche
             spotLight2.position.y = 130;               // On l'a met à la bonne position
           }
-          creation.render();                          // On actualise le rendu
           break;
       case "Torche2":                                 // Animation de la torche sur le mur avant gauche
           if (spotLight3.position.y == 80) {
@@ -269,7 +255,6 @@ function checkAnimation(name) {
             creation.getMusic('torche');
             spotLight3.position.y = 80;
           }
-          creation.render();
           break;
       case "Torche3":                                 // Animation de la torche sur le mur avant droit
           if (spotLight4.position.y == 80) {          // Si sa position y est à 40 c'est qu'elle est allumée
@@ -278,7 +263,6 @@ function checkAnimation(name) {
             creation.getMusic('torche');
             spotLight4.position.y = 80;
           }
-          creation.render();
           break;
       default:
           console.log("Nothing found");
@@ -534,8 +518,9 @@ function loadCharacter() {
     function ( gltf ) {
         const model = gltf.scene;
         model.traverse(function (object) { if(object.isMesh) object.castShadow = true;})
+        model.userData.name = "soldier";
         scene.add(model);
-        model.position.set(0,-90,0);
+        model.position.set(0,-80,0);
         model.children[0].scale.set(0.6, 0.6, 0.6);
 
         const gltfAnimations = gltf.animations;
@@ -545,7 +530,7 @@ function loadCharacter() {
             animationsMap.set(a.name, mixer.clipAction(a)); // ajouter les animations instance de AnimationAction au dictionnaires
         });
 
-        characterControls = new CharacterControls(model, mixer, animationsMap, characterOrbitControls, cameras["character"], "Idle");
+        characterControls = new CharacterControls(model, mixer, animationsMap, characterOrbitControls, cameras["character"], "Idle", scene);
     }
   );
 }
@@ -593,14 +578,11 @@ function loadTree() {
 
         let elementMesh = gltf.scene.children[0];
         elementMesh.scale.set(80, 80, 80);
-        console.log(position);
+
         model.position.set(position[0], position[1], position[2]);
         model.traverse(function (object) { if(object.isMesh) object.castShadow = true;})
 
         scene.add(model);
-
-
-
     }
     );
   }

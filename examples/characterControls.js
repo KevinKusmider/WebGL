@@ -12,7 +12,7 @@ export class CharacterControls {
     runVelocity = 300;
     walkVelocity = 100;
 
-    constructor(model,mixer, animationsMap, orbitControl, camera, currentAction) {
+    constructor(model,mixer, animationsMap, orbitControl, camera, currentAction, scene) {
         this.model = model;
         this.mixer = mixer;
         this.animationsMap = animationsMap;
@@ -24,6 +24,11 @@ export class CharacterControls {
         })
         this.orbitControl = orbitControl;
         this.camera = camera;
+        this.raycasterY = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, -1, 0), 0, 60);
+        this.raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(), 0, 10);
+        this.rayOrigin = new THREE.Vector3();
+        this.scene = scene;
+        this.rayObjects = this.scene.children.filter(a => a.userData.name != 'soldier');
         this.updateCameraTarget(0,0)
     }
 
@@ -51,6 +56,15 @@ export class CharacterControls {
 
         this.mixer.update(delta); // Met à jour l'animation avec la nouvelle valeur delta
 
+        this.rayOrigin.set(this.model.position.x, this.model.position.y+50, this.model.position.z);
+        this.raycasterY.ray.origin = this.rayOrigin;
+        const intersectionsY = this.raycasterY.intersectObjects( this.rayObjects);
+        const nearestY = intersectionsY[0];
+        if(typeof(nearestY) == "undefined" && this.currentAction == "Idle") {
+            this.model.position.y -= 5;
+            this.updateCameraTarget(0, 0, -5);
+        }
+
         if (this.currentAction == 'Run' || this.currentAction == 'Walk') {
             // calculate towards camera direction
             let angleYCameraDirection = Math.atan2(
@@ -75,22 +89,47 @@ export class CharacterControls {
             // move model & camera
             const moveX = this.walkDirection.x * velocity * delta;
             const moveZ = this.walkDirection.z * velocity * delta;
-            this.model.position.x += moveX;
-            this.model.position.z += moveZ;
-            this.updateCameraTarget(moveX, moveZ);
+
+            this.raycaster.ray.set(this.rayOrigin, this.walkDirection);
+            // let object = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), new THREE.MeshBasicMaterial({color: "#ffffff"}))
+            // object.position.set(this.raycasterY.ray.origin.x, this.raycasterY.ray.origin.y, this.raycasterY.ray.origin.z);
+            // this.scene.add(object);
+            const intersections = this.raycaster.intersectObjects( this.rayObjects, true);
+
+            let difY = 0;
+            if(typeof(nearestY) != "undefined") {
+                for(let i=0 ; i<intersectionsY.length; i++) {
+                    // let object = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), new THREE.MeshBasicMaterial({color: "#ff0000"}))
+                    // object.position.set(intersectionsY[i].point.x, intersectionsY[i].point.y, intersectionsY[i].point.z);
+                    // this.scene.add(object);
+                }
+                difY = nearestY.point.y - this.model.position.y;
+                this.model.position.y = nearestY.point.y; 
+            } else {
+                this.model.position.y -= 5
+                difY = -5;
+            }
+
+            if(typeof(intersections[0]) == "undefined") {
+                this.model.position.x += moveX;
+                this.model.position.z += moveZ;
+                this.updateCameraTarget(moveX, moveZ, difY);
+            }
         }
     }
 
-    updateCameraTarget(moveX, moveZ) {
+    updateCameraTarget(moveX, moveZ, difY = 0) {
         // move camera
         this.camera.position.x += moveX;
         this.camera.position.z += moveZ;
+        this.camera.position.y += difY;
 
         // update camera target
         this.cameraTarget.x = this.model.position.x;
         this.cameraTarget.y = this.model.position.y + 80;
         this.cameraTarget.z = this.model.position.z;
         this.orbitControl.target = this.cameraTarget; // On définit le point de centrage de l'obitcontrol la ou se situe le model 3D
+        this.orbitControl.update();
     }
 
     directionOffset(keysPressed) {
