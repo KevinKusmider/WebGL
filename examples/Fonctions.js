@@ -5,13 +5,13 @@ import { GUI }  from './jsm/libs/dat.gui.module.js';
 // Variables Globalss
 let gui;
 const manager = new THREE.LoadingManager();
-const textureLoader = new THREE.TextureLoader(manager);
+const textureLoader = new THREE.TextureLoader(manager); // Création d'un loader de texture on lui donne en parametre le manager pour pouvoir gérer le chargement des textures
 
 function getCameras() {
-  let cameras = {
+  let cameras = { // Object content les cameras et leurs propriétés
     main : {
       type: "PerspectiveCamera",
-      position: [0, 100, -1200]
+      position: [0, 100, -1200],
     },
     character : {
       type: "PerspectiveCamera",
@@ -19,15 +19,15 @@ function getCameras() {
     }
   }
 
-  for(let key in cameras) {
+  for(let key in cameras) { // Boucle sur chaque elements de l'objet cameras afin de transformer les propriétés en objet camera
     let info = cameras[key];
 
     let camera = {};
     switch(info.type) {
         case "PerspectiveCamera":
-          camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, info.far ? info.far : 15000);
+          camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, info.far ? info.far : 15000); // Création de l'objet camera
           if(info.position) {
-            camera.position.set(info.position[0], info.position[1], info.position[2])
+            camera.position.set(info.position[0], info.position[1], info.position[2]) // Définition de la position si elle existe
           }
           break;
         default:
@@ -35,10 +35,10 @@ function getCameras() {
           camera = null;
     }
 
-    cameras[key] = camera; // Change les informations de la texture en l'objet texture créer par threeJS     
+    cameras[key] = camera; // Change les informations de la caméra en l'objet caméra crée par threeJS
   }
 
-  return cameras;
+  return cameras; // Retourne l'objet cameras contenant toutes les cameras
 }
 
 /*
@@ -92,7 +92,7 @@ function getMaterial(texture_name, type = 'basic') { //définit la valeur par d�
       if(texture !== null) {
         return new THREE.MeshPhongMaterial( { map: texture, dithering: true } );   // cas où le MESH utilisé est le mesh basic (default)
       } else { return null }
-      
+
     case 'skybox':
       texture.repeat.set( 1, 1 );
       if(texture !== null) {

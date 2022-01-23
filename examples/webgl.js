@@ -8,13 +8,13 @@ import { GUI }  from './jsm/libs/dat.gui.module.js';        // Appel du fichier 
 
 /****** PARAMETRES ******/
 let RESOURCES_LOADED = true; // Permet de savoir si toutes les ressources ont été chargée, pour enlever la page de chargement
-let SCREEN_LOADER = true; // Si true affiche une page de chargement
-let FPV_MODE = false;
+let SCREEN_LOADER = true; // Si true affiche la page de chargement
+let FPV_MODE = false; // Defini si on a le control du personnage ou pas
 
 /****** CONSTANTES ******/
 const pi = Math.PI;
 const twoPi = Math.PI * 2;
-const manager = creation.manager;
+const manager = creation.manager; // On récupere le manager
 const loader = new GLTFLoader(manager);
 
 /****** VARIABLES ******/
