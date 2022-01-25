@@ -296,15 +296,15 @@ function buildGui(objects) {
     objects[0].intensity = val;
   } );
 
-  gui.add( params, 'positionx', -2000, 2000 ).onChange( function ( val ) {    // Position x de la lumière
+  gui.add( params, 'positionx', -5000, 5000 ).onChange( function ( val ) {    // Position x de la lumière
     objects[0].position.x = val;
   } );
 
-  gui.add( params, 'positionz', -2000, 2000 ).onChange( function ( val ) {    // Position z de la lumière
+  gui.add( params, 'positionz', -5000, 5000 ).onChange( function ( val ) {    // Position z de la lumière
     objects[0].position.z = val;
   } );
 
-  gui.add( params, 'positiony', -2000, 2000 ).onChange( function ( val ) {    // Position y de la lumière
+  gui.add( params, 'positiony', -5000, 5000 ).onChange( function ( val ) {    // Position y de la lumière
     objects[0].position.y = val;
   } );
 
@@ -342,7 +342,8 @@ function getMusic(name) {
     const audioLoader = new THREE.AudioLoader();                              // Création d'une variable pour charger le son dans nos dossier
     audioLoader.load( music[name] , function( buffer ) {                      // Fonction pour charger le son et le lancer
       sound.setBuffer( buffer );                                              // Initialise le son dans la variable
-      sound.play();                                                           // Joue le son
+      sound.play();
+      console.log('OK');                                                          // Joue le son
     });
   } else {                                                                    // Si le son n'a pas été trouvé
     console.log("Le son n'a pas été trouvé");                                 // On affiche dans la console
@@ -350,8 +351,6 @@ function getMusic(name) {
   }
 
 }
-
-
 
 
 export { manager, getCameras, getTexture, getMaterial, createCone, createBox, createCylinder, createSpotlight, getMusic, buildGui } // pour pouvoir utiliser les fonctions dans un autre fichier

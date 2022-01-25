@@ -31,6 +31,7 @@ let elements = {};
 let characterControls, characterOrbitControls, keysPressed = {};
 let stats, mixer, clock = new THREE.Clock();
 let phoenixGroup = new THREE.Group();
+let torch;
 
 
 /****** SCREEN LOADER ******/
@@ -127,7 +128,7 @@ function init() {
   controls = new OrbitControls(camera, renderer.domElement); // define methode of controls
   controls.maxPolarAngle = Math.PI / 2;
   controls.minPolarAngle = Math.PI / 4;
-  // controls.maxDistance = 2000; //limit camera zoom outward
+  controls.maxDistance = 1700; //limit camera zoom outward
   controls.minDistance = 100; //limit camera zoom inward
   controls.enablePan = false; //Stop camera panning
   controls.update();
@@ -274,10 +275,10 @@ function buildCastle() {
   // Tower behind left
   creation.createCylinder([300, 130, 300], [200, 200, 600, 200], ['texture_wall2'], scene);
   creation.createCone([300, 550, 300], [200, 240, 200], ['texture_cone'], scene);
-  let torch = creation.createCylinder([156,100,156], [10,0,30,20], ['texture_dirt']);        // Torche
-  torch.userData.draggable = true;
-  torch.userData.name = 'Torche1';
-  scene.add(torch);
+  let torch1 = creation.createCylinder([156,100,156], [10,0,30,20], ['texture_dirt']);        // Torche
+  torch1.userData.draggable = true;
+  torch1.userData.name = 'Torche1';
+  scene.add(torch1);
 
   // Tower behind right
   creation.createCylinder([-350, 60, 350], [140, 140, 460, 200], ['texture_wall2'], scene); // Base
@@ -403,7 +404,7 @@ function lights() {
   scene.add( ambient );
 
   // création d'un spotLight / source de lumière / soleil
-  spotLight = creation.createSpotlight([0xffffff, 1], [-2000,2000,0], Math.PI / 4, 0.1, 2, 2500, null, true, [512, 512], [10, 200, 1]);
+  spotLight = creation.createSpotlight([0xffffff, 1], [-5000,5000,0], Math.PI / 8, 0.1, 2, 10000, null, true, [512, 512], [10, 200, 1]);
   scene.add(spotLight);
 
   // Création d'un deuxième spotlight / Sur la tour au fond à gauche
@@ -425,12 +426,12 @@ function lights() {
   dot_light.position.set( -900, 144, -1000 ); // position de la sphere
   scene.add( dot_light ); // ajout de la sphere
 
-  // Helper permet de debugger les problèmes sur les lumières
-  // lightHelper = new THREE.SpotLightHelper(dot );
-  // scene.add( lightHelper );
-  //
-  // shadowCameraHelper = new THREE.CameraHelper( dot.shadow.camera );
-  // scene.add( shadowCameraHelper );
+  /* Helper permet de debugger les problèmes sur les lumières
+   lightHelper = new THREE.SpotLightHelper(spotLight );
+ scene.add( lightHelper );
+
+   shadowCameraHelper = new THREE.CameraHelper( spotLight.shadow.camera );
+  scene.add( shadowCameraHelper );*/
 }
 
 function solarSystem() {
@@ -446,15 +447,15 @@ function solarSystem() {
       spotLight2.position.y = 130;
       spotLight3.position.y = 80;
       spotLight4.position.y = 80;
-      if(spotLight.position.x < -1000 && spotLight.position.y <= 1000){             // Boucle pour avoir le quart bas (lever du soleil)
+      if(spotLight.position.x < -2500 && spotLight.position.y <= 2500){             // Boucle pour avoir le quart bas (lever du soleil)
         ambient.intensity = 0.075;                                                // La luminosité ambiante se met à 0.075
         scene.background = new THREE.Color(0x6394cf);                             // On modifie la couleur du background
       }else{                                                                      // Boucle pour avoir le jour après le lever
         ambient.intensity = 0.1;                                                  // La luminosité ambiante se met à 0.075
         scene.background = new THREE.Color(0x77b5fe);                             // On modifie la couleur du background
       }
-      spotLight.position.x += 2;                                                  // On modifie la position x du soleil
-      spotLight.position.y = spotLight.position.x + 2000;                         // On modifie la position y du soleil en fonction de x
+      spotLight.position.x += 5;                                                  // On modifie la position x du soleil
+      spotLight.position.y = spotLight.position.x + 5000;                         // On modifie la position y du soleil en fonction de x
     }
     if(spotLight.position.x >= 0 && spotLight.position.y > 0){                    // Le soleil se couche
       spotLight2.intensity = 0;                                                   // On éteint les lumières
@@ -463,15 +464,15 @@ function solarSystem() {
       spotLight2.position.y = 130;
       spotLight3.position.y = 80;
       spotLight4.position.y = 80;
-      if(spotLight.position.x >= 1000 && spotLight.position.y < 1000){              // Boucle pour avoir le quart bas (coucher du soleil)
+      if(spotLight.position.x >= 2500 && spotLight.position.y < 2500){              // Boucle pour avoir le quart bas (coucher du soleil)
         ambient.intensity = 0.075;                                                // La luminosité ambiante se met à 0.075
         scene.background = new THREE.Color(0x6394cf);                             // On modifie la couleur du background
       }else{                                                                      // Boucle pour avoir le jour avant le coucher
         ambient.intensity = 0.1;                                                  // La luminosité ambiante se met à 0.075
         scene.background = new THREE.Color(0x77b5fe);                             // On modifie la couleur du background
       }
-    spotLight.position.x += 2;                                                    // On modifie la position x du soleil
-    spotLight.position.y = 2000 - spotLight.position.x ;                          // On modifie la position y du soleil en fonction de x
+    spotLight.position.x += 5;                                                    // On modifie la position x du soleil
+    spotLight.position.y = 5000 - spotLight.position.x ;                          // On modifie la position y du soleil en fonction de x
     }
     if(spotLight.position.x > 0 && spotLight.position.y <= 0){                    // Le soleil vient de se coucher
       ambient.intensity = 0.1;                                                    // La luminosité ambiante se met à 0.075
@@ -481,13 +482,13 @@ function solarSystem() {
         spotLight3.intensity = 2;
         spotLight4.intensity = 2;
       }
-      if(spotLight.position.x > 1000 && spotLight.position.y >= -1000){             // Boucle pour avoir la nuit juste après le coucher
+      if(spotLight.position.x > 2500 && spotLight.position.y >= -2500){             // Boucle pour avoir la nuit juste après le coucher
         scene.background = new THREE.Color(0x5075a2);                             // On modifie la couleur du background
       }else{                                                                      // Boucle pour avoir la nuit après le coucher
         scene.background = new THREE.Color(0x3e5777);                             // On modifie la couleur du background
       }
-      spotLight.position.x -= 2;                                                  // On modifie la position x du soleil
-      spotLight.position.y = spotLight.position.x - 2000;                         // On modifie la position y du soleil en fonction de x
+      spotLight.position.x -= 5;                                                  // On modifie la position x du soleil
+      spotLight.position.y = spotLight.position.x - 5000;                         // On modifie la position y du soleil en fonction de x
     }
     if(spotLight.position.x <= 0 && spotLight.position.y < 0){                    // Le soleil est déjà coucher jusqu'au lever
       ambient.intensity = 0.075;                                                  // La luminosité ambiante se met à 0.075
@@ -497,13 +498,13 @@ function solarSystem() {
         spotLight3.intensity = 2;
         spotLight4.intensity = 2;
       }
-      if(spotLight.position.x <= -1000 && spotLight.position.y > -1000){            // Boucle pour avoir la nuit juste avant le lever
+      if(spotLight.position.x <= -2500 && spotLight.position.y > -2500){            // Boucle pour avoir la nuit juste avant le lever
         scene.background = new THREE.Color(0x5075a2);                             // On modifie la couleur du background
       }else{                                                                      // Boucle pour avoir la nuit avant le lever
         scene.background = new THREE.Color(0x3e5777);                             // On modifie la couleur du background
       }
-      spotLight.position.x -= 2;                                                  // On modifie la position x du soleil
-      spotLight.position.y = -2000 - spotLight.position.x;                        // On modifie la position y du soleil en fonction de x
+      spotLight.position.x -= 5;                                                  // On modifie la position x du soleil
+      spotLight.position.y = -5000 - spotLight.position.x;                        // On modifie la position y du soleil en fonction de x
     }
   }, 10)                                                                          // La boucle est un setInterval il faut donc donner un temps en millisecondes pour dire tout les combien de temps la boucle se repete
 
