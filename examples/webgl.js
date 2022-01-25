@@ -161,7 +161,7 @@ function init() {
   //   sound.play();                                                         // Joue le son
   // });
 
-  let newAudio = creation.getPositionalMusic("phoenix", 20, cameras);
+  // let newAudio = creation.getPositionalMusic("phoenix", 20, cameras);
 
 
 
@@ -213,7 +213,8 @@ function animate() {
 function onClick(event) {
   // Calculates mouse position in normalized device coordinates
   // Allow to have a value between -1 & 1
-  FIRST_CLICK ? creation.getMusic('ambient', true) : FIRST_CLICK = false ;
+  FIRST_CLICK ? creation.getMusic('ambient', true) : '' ;
+  FIRST_CLICK = false;
 
   click.x = (event.clientX / window.innerWidth) * 2 - 1;
   click.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -559,6 +560,8 @@ function loadPhoenix() {
     function ( gltf ) {
       const model = gltf.scene;
       const animations = gltf.animations;
+
+      model.add(creation.getPositionalMusic("phoenix", 50, cameras));
 
       let elementMesh = gltf.scene.children[0];
       elementMesh.scale.set(0.6, 0.6, 0.6);

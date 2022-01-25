@@ -343,7 +343,7 @@ function getMusic(name, loop = false) {
     const audioLoader = new THREE.AudioLoader();                              // Création d'une variable pour charger le son dans nos dossier
     audioLoader.load( music[name] , function( buffer ) {                      // Fonction pour charger le son et le lancer
       sound.setBuffer( buffer );
-      if(loop) { sound.setLoop( true ); sound.setVolume( 0.3 );}                                         // Initialise le son dans la variable
+      if(loop) { sound.setLoop( true ); sound.setVolume( 0.1 );}                                         // Initialise le son dans la variable
       sound.play();                                                         // Joue le son
     });
   } else {                                                                    // Si le son n'a pas été trouvé
