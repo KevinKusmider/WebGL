@@ -10,6 +10,7 @@ import { GUI }  from './jsm/libs/dat.gui.module.js';        // Appel du fichier 
 let RESOURCES_LOADED = true; // Permet de savoir si toutes les ressources ont été chargée, pour enlever la page de chargement
 let SCREEN_LOADER = true; // Si true affiche la page de chargement
 let FPV_MODE = false; // Defini si on a le control du personnage ou pas
+let FIRST_CLICK = true;
 
 /****** CONSTANTES ******/
 const pi = Math.PI;
@@ -150,6 +151,19 @@ function init() {
   loadPhoenix();
   loadTree();
 
+  // //  Music
+  // const listener = new THREE.AudioListener();                               // Création d'une variable pour que l'audio puisse se lancer
+  // const sound = new THREE.Audio( listener );                                // Création d'une variable qui peut contenir un son que l'on met dans notre variable pour ecouter
+  // const audioLoader = new THREE.AudioLoader();                              // Création d'une variable pour charger le son dans nos dossier
+  // audioLoader.load( './sounds/ambiance.mp3' , function( buffer ) {                      // Fonction pour charger le son et le lancer
+  //   sound.setBuffer( buffer );                                                   // Initialise le son dans la variable
+  // //  sound.setLoop( true );
+  //   sound.play();                                                         // Joue le son
+  // });
+
+  let newAudio = creation.getPositionalMusic("phoenix", 20, cameras);
+
+
 
   loader.load(
     // Ressource URL
@@ -199,6 +213,7 @@ function animate() {
 function onClick(event) {
   // Calculates mouse position in normalized device coordinates
   // Allow to have a value between -1 & 1
+  FIRST_CLICK ? creation.getMusic('ambient', true) : FIRST_CLICK = false ;
 
   click.x = (event.clientX / window.innerWidth) * 2 - 1;
   click.y = -(event.clientY / window.innerHeight) * 2 + 1;

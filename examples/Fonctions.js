@@ -65,7 +65,7 @@ function getTexture(name) {
 
   let path = textures[name];  // On va chercher le chemin qui correspond au nom de la texture
 
-  if(path !== undefined) {
+  if(path !== undefined) {    //si path est defini
     return textureLoader.load( path); // create and return the texture
   } else {
     console.log('Texture non existante');
@@ -330,10 +330,11 @@ function buildGui(objects) {
   Appelée lorsqu'on a besoin de lancer un audio
   @param { string } noom de l'audio
 */
-function getMusic(name) {
+function getMusic(name, loop = false) {
   const music = {                                                             // on crée un tableau qui contient toutes les musiques que l'on utilise
     'torche' : './sounds/torche.mp3',
     'pont': './sounds/pont-levis.mp3',
+    'ambient': './sounds/ambiance.mp3'
   }
 
   if(music[name] != null) {                                                   // protection pour si l'audio voulu n'a pas été trouvé
@@ -341,9 +342,9 @@ function getMusic(name) {
     const sound = new THREE.Audio( listener );                                // Création d'une variable qui peut contenir un son que l'on met dans notre variable pour ecouter
     const audioLoader = new THREE.AudioLoader();                              // Création d'une variable pour charger le son dans nos dossier
     audioLoader.load( music[name] , function( buffer ) {                      // Fonction pour charger le son et le lancer
-      sound.setBuffer( buffer );                                              // Initialise le son dans la variable
-      sound.play();
-      console.log('OK');                                                          // Joue le son
+      sound.setBuffer( buffer );
+      if(loop) { sound.setLoop( true ); sound.setVolume( 0.3 );}                                         // Initialise le son dans la variable
+      sound.play();                                                         // Joue le son
     });
   } else {                                                                    // Si le son n'a pas été trouvé
     console.log("Le son n'a pas été trouvé");                                 // On affiche dans la console
@@ -352,5 +353,37 @@ function getMusic(name) {
 
 }
 
+/*
+  Appelée lorsqu'on a besoin de lancer un Positional audio
+  @param { string } noom de l'audio
+*/
+function getPositionalMusic(name, distance = 20, cameras = []) {
+  const music = {                                                             // on crée un tableau qui contient toutes les musiques que l'on utilise
+    'phoenix' : './sounds/phoenix.mp3'
+  }
 
-export { manager, getCameras, getTexture, getMaterial, createCone, createBox, createCylinder, createSpotlight, getMusic, buildGui } // pour pouvoir utiliser les fonctions dans un autre fichier
+  if(music[name] != null) {                                                   // protection pour si l'audio voulu n'a pas été trouvé
+    const listener = new THREE.AudioListener();                               // Création d'une variable pour que l'audio puisse se lancer
+    for(let key in cameras) {
+      cameras[key].add(listener);
+    }
+    const sound = new THREE.PositionalAudio( listener );                                // Création d'une variable qui peut contenir un son que l'on met dans notre variable pour ecouter
+    const audioLoader = new THREE.AudioLoader();                              // Création d'une variable pour charger le son dans nos dossier
+    audioLoader.load( music[name], function( buffer ) {
+      sound.setBuffer( buffer );
+      sound.setLoop( true );
+      sound.setRefDistance( distance );
+      sound.play();
+    });
+    // const helper = new THREE.PositionalAudioHelper( sound );
+    // positionalAudio.add( helper );
+    return sound;
+  } else {                                                                    // Si le son n'a pas été trouvé
+    console.log("Le son n'a pas été trouvé");                                 // On affiche dans la console
+    return null;                                                              // Et on renvoie null
+  }
+
+}
+
+
+export { manager, getCameras, getTexture, getMaterial, createCone, createBox, createCylinder, createSpotlight, getMusic, buildGui, getPositionalMusic } // pour pouvoir utiliser les fonctions dans un autre fichier
