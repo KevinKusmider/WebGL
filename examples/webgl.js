@@ -9,7 +9,7 @@ import { GUI }  from './jsm/libs/dat.gui.module.js';        // Appel du fichier 
 /****** PARAMETRES ******/
 let RESOURCES_LOADED = true; // Permet de savoir si toutes les ressources ont été chargée, pour enlever la page de chargement
 let SCREEN_LOADER = true; // Si true affiche une page de chargement
-let FPV_MODE = false;
+let FPV_MODE = true;
 
 /****** CONSTANTES ******/
 const pi = Math.PI;
@@ -24,7 +24,7 @@ let camera, scene, renderer, controls;
 camera = cameras["main"];
 
 let x, y, z;
-let click, raycaster, pivot; // Pont levis
+let pivot; // Pont levis
 let ambient, spotLight, spotLight2, spotLight3, spotLight4, dot_light, sphere;
 let lightHelper, shadowCameraHelper;
 let elements = {};
@@ -97,12 +97,7 @@ function init() {
   renderer.outputEncoding = THREE.sRGBEncoding;
   document.body.appendChild(renderer.domElement);
 
-  /****** RAYCASTER ******/
-  click = new THREE.Vector2(); // capture x & y position in Vector2 var
-  raycaster = new THREE.Raycaster(); // capture the clicked element, mouse picking
-
   /****** EVENT LISTENNERS ******/
-  window.addEventListener('click', onClick); // When click
   window.addEventListener('resize', onWindowResize); // When window's resized
   document.addEventListener("keypress", (event) => {
     if(event.key.toLowerCase() == "m") {
@@ -134,8 +129,8 @@ function init() {
 
   // Character
   characterOrbitControls = new OrbitControls(cameras["character"], renderer.domElement);
-  characterOrbitControls.minDistance = 150;
-  characterOrbitControls.maxDistance = 150;
+  characterOrbitControls.minDistance = 30;
+  characterOrbitControls.maxDistance = 30;
   characterOrbitControls.enablePan = false;
   characterOrbitControls.maxPolarAngle = Math.PI - pi/4;
   characterOrbitControls.update();
@@ -153,12 +148,8 @@ function init() {
 
   /****** FUNCTIONS CALLS ******/
   lights();
-  buildCastle();
   solarSystem();
   loadCharacter();
-  scene.add(phoenixGroup);
-  loadPhoenix();
-  loadTree();
 
 
   loader.load(
@@ -198,218 +189,9 @@ function animate() {
       characterControls.update(mixerUpdateDelta, keysPressed);
   }
 
-
-  phoenixGroup.rotation.y += mixerUpdateDelta/2;
-
   stats.update();
-  mixer.update(mixerUpdateDelta);
+  // mixer.update(mixerUpdateDelta);
   renderer.render(scene, FPV_MODE ? cameras["character"] : camera);
-}
-
-function onClick(event) {
-  // Calculates mouse position in normalized device coordinates
-  // Allow to have a value between -1 & 1
-
-  click.x = (event.clientX / window.innerWidth) * 2 - 1;
-  click.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-  raycaster.setFromCamera( click, FPV_MODE ? cameras["character"] : camera); // mets à jours le rayon selon son origine et une direction
-
-  const found = raycaster.intersectObjects( scene.children, true); // détecte les objets en intérsection avec le rayon cf l.236
-
-  console.log(found[0])
-  if(found.length > 0 && found[0].object.userData.draggable == true) {
-      checkAnimation(found[0].object.userData.name);
-  }
-}
-
-function checkAnimation(name) {
-  switch(name) {
-      case "bridge":                      // animation du pont-levis
-      creation.getMusic('pont');          // On lance l'audio du pont-levis
-          let counter;
-          elements[name].children[0].userData.draggable = false;
-          if(elements[name].userData.status == "down") { // Récupération élément['bridge'] = pivot et vérification de son status
-              elements[name].userData.status = "up";     // Changement du status to up
-              counter = 0;
-              let open = setInterval(function(){  // Ouverture du pont
-                  elements['bridge'].rotation.x = counter * 0.01; // Le pont s'incline de 0.01 en 0.01 jusqu'a arrivé à la limite
-                  if(elements['bridge'].rotation.x == 1.5) {
-                    elements[name].children[0].userData.draggable = true;
-                    clearInterval(open);// Declaration de la limite pour l'inclinaison du pont
-                  }
-                  counter++;
-              }, 10)   // 10 correspond à la répétition de la fonction toutes les 10 millisecondes
-          } else {
-              elements[name].userData.status = "down";
-              counter = 150;
-              let open = setInterval(function(){  // Fermeture du pont
-                  elements['bridge'].rotation.x = counter * 0.01;// Le pont s'incline de 0.01 en 0.01 jusqu'a arrivé à la limite
-                  if(elements['bridge'].rotation.x == 0) { // Declaration de la limite pour l'inclinaison du pont
-                    elements[name].children[0].userData.draggable = true;
-                    clearInterval(open);
-                  }
-                  counter--;
-              }, 10)
-          }
-          break;
-      case "Torche1":                                 // Animation de la torche sur la tour au fond à gauche
-          if (spotLight2.position.y == 130) {          // Si sa position y est à 65 c'est qu'elle est allumée
-            spotLight2.position.y = -2000;            // On l'a met à -1000 pour ne plus la voir et donc croire qu'elle est eteinte
-          }else{
-            creation.getMusic('torche');              // Si elle était éteinte on lance l'audio de l'allumage de torche
-            spotLight2.position.y = 130;               // On l'a met à la bonne position
-          }
-          creation.render();                          // On actualise le rendu
-          break;
-      case "Torche2":                                 // Animation de la torche sur le mur avant gauche
-          if (spotLight3.position.y == 80) {
-            spotLight3.position.y = -2000;
-          }else{
-            creation.getMusic('torche');
-            spotLight3.position.y = 80;
-          }
-          creation.render();
-          break;
-      case "Torche3":                                 // Animation de la torche sur le mur avant droit
-          if (spotLight4.position.y == 80) {          // Si sa position y est à 40 c'est qu'elle est allumée
-            spotLight4.position.y = -2000;
-          }else{
-            creation.getMusic('torche');
-            spotLight4.position.y = 80;
-          }
-          creation.render();
-          break;
-      default:
-          console.log("Nothing found");
-  }
-}
-
-function buildCastle() {
-  /***** TOWERS *****/
-  // Tower behind left
-  creation.createCylinder([300, 130, 300], [200, 200, 600, 200], ['texture_wall2'], scene);
-  creation.createCone([300, 550, 300], [200, 240, 200], ['texture_cone'], scene);
-  let torch = creation.createCylinder([156,100,156], [10,0,30,20], ['texture_dirt']);        // Torche
-  torch.userData.draggable = true;
-  torch.userData.name = 'Torche1';
-  scene.add(torch);
-
-  // Tower behind right
-  creation.createCylinder([-350, 60, 350], [140, 140, 460, 200], ['texture_wall2'], scene); // Base
-  creation.createCylinder([-350, 300, 350], [170, 170, 80, 200], ['texture_wall2'], scene); // Top of tower
-
-  // Tower front right
-  creation.createCylinder([-380, 10, -380], [100, 100, 350, 200], ['texture_wall2'], scene);
-  creation.createCone([-380, 250, -380], [100, 130, 100], ['texture_cone'], scene);
-  creation.createCylinder([-310, 110, -320], [60, 60, 15, 100], ['texture_wood'], scene); // Walk zone
-
-  // Tower front middle right
-  creation.createCylinder([-114, 0, -400], [50, 50, 340, 200], ['texture_wall2'], scene);
-  creation.createCylinder([-114, 175, -400], [60, 60, 40, 200], ['texture_wall2'], scene);
-
-  // Tower front middle left
-  creation.createCylinder([114, 0, -400], [50, 50, 340, 200], ['texture_wall2'], scene);
-  creation.createCylinder([114, 175, -400], [60, 60, 40, 200], ['texture_wall2'], scene);
-
-  // Tower front left
-  creation.createCylinder([380, 10, -380], [100, 100, 350, 200], ['texture_wall2'], scene);
-  creation.createCone([380, 250, -380], [100, 130, 100], ['texture_cone'], scene);
-  creation.createCylinder([310, 110, -320], [60, 60, 15, 100], ['texture_wood'], scene); // Walk zone
-
-
-  /***** WALLS *****/
-  // Wall behind
-  creation.createBox([20, 40, 390], [540, 340, 100], ['texture_wall2'], scene);
-
-  // Wall left
-  creation.createBox([385, 0, 0], [40, 280, 800], ['texture_wall2'], scene);
-  creation.createBox([340, 110, -140], [60, 15, 330], ['texture_wood'], scene); // Walk zone
-
-  // Loop remparts wall left
-  z = 64;
-  for (var i = 0; i < 6; i++) {
-      creation.createBox([385, 150, z], [40, 20, 30], ['texture_wall2'], scene);
-      z = z - 60;
-  }
-
-  // Wall front left
-  creation.createBox([275, 0, -400], [300, 280, 40], ['texture_wall2'], scene);
-  creation.createBox([210, 110, -350], [280, 15, 60], ['texture_wood'], scene); // Walk zone
-  torch = creation.createCylinder([220,60,-424], [10,0,30,20], ['texture_dirt']); // Torche
-  torch.userData.draggable = true;
-  torch.userData.name = 'Torche2';
-  scene.add(torch);
-
-  // Loop remparts wall front left
-  x = 250;
-  for (var i = 0; i < 2; i++) {
-      creation.createBox([x, 150, -400], [30, 20, 40], ['texture_wall2'], scene);
-      x = x - 50;
-  }
-
-  // Drawbridge
-  creation.createBox([0, 136, -400], [160, 30, 40], ['texture_wall2'], scene); // wall above
-  creation.createBox([0, -110, -400], [160, 40, 20], ['texture_wall2'], scene); // wall uper
-  pivot = new THREE.Group(); // permet d'avoir un point d'encrage/origine au milieu de la base de la box
-  pivot.position.set( -65, -100, -395); // Dawnbridge's Origin
-  let bridge = creation.createBox([65, 5, -115], [130, 10, 210], ['texture_wood'])  // Création du pont-levis
-  bridge.userData.draggable = true; // Ajout de l'attribut draggable
-  bridge.userData.name = "bridge"; // On définit le nom du pont
-  pivot.userData.status = "up"; // On définit la position du pont-levis au debut
-  pivot.add(bridge); // Ajout du pont dans le groupe pivot
-  scene.add(pivot); // Ajout dans la scène de l'objet pivot
-  elements['bridge'] = pivot;   // On applique la valeur de pivot dans elements['bridge'] // C'est un tableaau si on veut rajouter des éléments plus tard
-  elements['bridge'].rotation.x = 1.5; // Rotation initiale du pont-levis (0 si en bas, 1.5 si il est fermé)
-
-  // Wall front right
-  creation.createBox([-275, 0, -400], [300, 280, 40], ['texture_wall2'], scene);
-  creation.createBox([-210, 110, -350], [280, 15, 60], ['texture_wood'], scene); // Walk zone
-  torch = creation.createCylinder([-220,60,-424], [10,0,30,20], ['texture_dirt']);  // Torche
-  torch.userData.draggable = true;
-  torch.userData.name = 'Torche3';
-  scene.add(torch);
-
-  // Loop remparts wall front right
-  x = -250;
-  for (var i = 0; i < 2; i++) {
-      creation.createBox([x, 150, -400], [30, 20, 40], ['texture_wall2'], scene);
-      x = x + 50;
-  }
-
-  // Wall right
-  creation.createBox([-390, 0, 0], [40, 280, 800], ['texture_wall2'], scene);
-  creation.createBox([-340, 110, -20], [60, 15, 600], ['texture_wood'], scene); // Walk zone
-
-  // Loop remparts wall right
-  z = 180;
-  for (var i = 0; i < 8; i++) {
-      creation.createBox([-390, 150, z], [40, 20, 30], ['texture_wall2'], scene);
-      z = z - 60;
-  }
-
-  /***** FLOOR *****/
-  // Floor inside castle
-  creation.createBox([0, -130, 0], [800, 80, 800], ['texture_dirt'], scene);
-
-  // Water
-  creation.createBox([0, -140, 0], [1220, 20, 1220], ['texture_water'], scene);
-
-  // Grass
-  creation.createBox([0, -140, -900], [2400, 80, 600], ['texture_grass'], scene);
-  creation.createBox([0, -140, 900], [2400, 80, 600], ['texture_grass'], scene);
-  creation.createBox([-900, -140, 0], [600, 80, 2400], ['texture_grass'], scene);
-  creation.createBox([900, -140, 0], [600, 80, 2400], ['texture_grass'], scene);
-  creation.createBox([0, -170, 0], [1800, 20, 1800], ['texture_grass'], scene);
-
-  // Stairs
-  y = -100;
-  x = 147;
-  for (var i = 0; i < 14; i++) {
-      creation.createBox([x, y, 88], [20, 15, 130], ['texture_wall2'], scene);
-      y = y + 15;
-      x = x + 16;
-  }
 }
 
 function lights() {
@@ -492,7 +274,6 @@ function solarSystem() {
     if(spotLight.position.x > 0 && spotLight.position.y <= 0){                    // Le soleil vient de se coucher
       ambient.intensity = 0.1;                                                    // La luminosité ambiante se met à 0.075
       if (spotLight2.intensity == 0 && spotLight3.intensity == 0 && spotLight4.intensity == 0){   // On regarde si toutes les lumières sont à 0, on les allume et on met le son
-        creation.getMusic('torche');
         spotLight2.intensity = 2;                                                   // On allume les lumières
         spotLight3.intensity = 2;
         spotLight4.intensity = 2;
@@ -508,7 +289,6 @@ function solarSystem() {
     if(spotLight.position.x <= 0 && spotLight.position.y < 0){                    // Le soleil est déjà coucher jusqu'au lever
       ambient.intensity = 0.075;                                                  // La luminosité ambiante se met à 0.075
       if (spotLight2.intensity == 0 && spotLight3.intensity == 0 && spotLight4.intensity == 0){
-        creation.getMusic('torche');
         spotLight2.intensity = 2;                                                   // On allume les lumières
         spotLight3.intensity = 2;
         spotLight4.intensity = 2;
@@ -522,21 +302,19 @@ function solarSystem() {
       spotLight.position.y = -2000 - spotLight.position.x;                        // On modifie la position y du soleil en fonction de x
     }
   }, 10)                                                                          // La boucle est un setInterval il faut donc donner un temps en millisecondes pour dire tout les combien de temps la boucle se repete
-
-  creation.buildGui([spotLight, dot_light]);       // Fonction pour construire un GUI
 }
 
 function loadCharacter() {
   loader.load (
     // Ressource URL
-    "./3Delements/Soldier/soldier.glb",
+    "./3Delements/scooterr/source/scene.glb",
     // Called when the ressource is loaded
     function ( gltf ) {
         const model = gltf.scene;
         model.traverse(function (object) { if(object.isMesh) object.castShadow = true;})
         scene.add(model);
-        model.position.set(0,-90,0);
-        model.children[0].scale.set(0.6, 0.6, 0.6);
+        model.position.set(0,-80,0);
+        model.children[0].scale.set(5, 5, 5);
 
         const gltfAnimations = gltf.animations;
         const mixer = new THREE.AnimationMixer(model); // Définition du mixer object qui permet de jouer les animations
@@ -550,58 +328,6 @@ function loadCharacter() {
   );
 }
 
-function loadPhoenix() {
-  loader.load(
-    // Ressource URL
-    './3Delements/Phoenix/phoenix.glb',
-    // Called when the ressource is loaded
-    function ( gltf ) {
-      const model = gltf.scene;
-      const animations = gltf.animations;
-
-      let elementMesh = gltf.scene.children[0];
-      elementMesh.scale.set(0.6, 0.6, 0.6);
-
-      model.position.set(1000, 700,0);
-      model.rotation.z = Math.PI/16;
-      model.rotation.y = Math.PI/2;
-
-      model.traverse(function (object) { if(object.isMesh) object.castShadow = true;})
-
-      mixer = new THREE.AnimationMixer( model );
-
-      const action = mixer.clipAction( animations[ 0 ] ); // play the first animation
-      action.weight = 1;
-      action.play();
-      phoenixGroup.add(model);
-    }
-  );
-}
-
-function loadTree() {
-  let positions = [[1000, -100 ,1000], [-900, -100 ,-800] , [-500, -100 ,900] , [1000, -100 ,-1000], [-900, -100 ,-100]]
-
-  for (var i = 0; i < positions.length; i++) {
-    let position = positions[i];
-    loader.load(
-      // Ressource URL
-      './3Delements/Tree/tree.glb',
-      // Called when the ressource is loaded
-      function ( gltf ) {
-        const model = gltf.scene;
-
-
-        let elementMesh = gltf.scene.children[0];
-        elementMesh.scale.set(80, 80, 80);
-        console.log(position);
-        model.position.set(position[0], position[1], position[2]);
-        model.traverse(function (object) { if(object.isMesh) object.castShadow = true;})
-
-        scene.add(model);
 
 
 
-    }
-    );
-  }
-}

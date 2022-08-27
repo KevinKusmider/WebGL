@@ -17,11 +17,6 @@ export class CharacterControls {
         this.mixer = mixer;
         this.animationsMap = animationsMap;
         this.currentAction = currentAction;
-        this.animationsMap.forEach((value, key) => {
-            if (key == currentAction) { // Recherche l'animation dans le dictionnaire et la joue.
-                value.play();
-            }
-        })
         this.orbitControl = orbitControl;
         this.camera = camera;
         this.updateCameraTarget(0,0)
@@ -40,12 +35,6 @@ export class CharacterControls {
         }
 
         if (this.currentAction != play) {
-            const toPlay = this.animationsMap.get(play);
-            const current = this.animationsMap.get(this.currentAction);
-
-            current.fadeOut(this.fadeDuration); // Diminue le degré d'influence (weight) de l'animation progressivement
-            toPlay.reset().fadeIn(this.fadeDuration).play(); // Reinitialise l'animation puis augmente le weight progressivement
-
             this.currentAction = play;
         }
 
@@ -60,7 +49,7 @@ export class CharacterControls {
             let directionOffset = this.directionOffset(keysPressed);
 
             // rotate model
-            this.rotateQuaternion.setFromAxisAngle(this.rotateAngle, angleYCameraDirection + directionOffset);
+            this.rotateQuaternion.setFromAxisAngle(this.rotateAngle, angleYCameraDirection + 4.1);
             this.model.quaternion.rotateTowards(this.rotateQuaternion, 0.2);
 
             // calculate direction
@@ -88,7 +77,7 @@ export class CharacterControls {
 
         // update camera target
         this.cameraTarget.x = this.model.position.x;
-        this.cameraTarget.y = this.model.position.y + 80;
+        this.cameraTarget.y = this.model.position.y + 90;
         this.cameraTarget.z = this.model.position.z;
         this.orbitControl.target = this.cameraTarget; // On définit le point de centrage de l'obitcontrol la ou se situe le model 3D
     }
